@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.19.2 <3.0.0'
+  sdk: '>=3.0.6 <4.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -34,14 +34,15 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
+
   cupertino_icons: ^1.0.2
-  google_fonts: ^2.1.0
-  flutter_svg: ^0.22.0
+  google_fonts: ^5.1.0
+  flutter_svg: ^2.0.7
   flutter_chat_ui: ^1.6.6
   flutter_firebase_chat_core: ^1.6.4
   file_picker: ^5.3.0
   flutter_chat_types: ^3.6.0
-  image_picker: ^0.8.7+5
+  image_picker: ^1.0.1
   mime: ^1.0.4
   open_filex: ^4.3.2
   uuid: ^3.0.7
@@ -70,11 +71,11 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
+#   To add assets to your application, add an assets section, like this:
   assets:
-     - assets/icons/
      - assets/images/
-#     - assets/images/student_profile.jpg
+     - assets/icons/
+#     - aimages/classroom_icon.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
