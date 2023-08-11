@@ -10,10 +10,81 @@ import '../../components/custom_buttons.dart';
 
 late bool _passwordVisible;
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
+  static String routeName = 'LoginScreen';
 
-  // This widget is the root of your application.
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  // final _formKey = GlobalKey<FormState>();
+  // final bool _isLogin = true;
+  // bool _loading = false;
+  // final TextEditingController _emailController = TextEditingController();
+  // final TextEditingController _passwordController = TextEditingController();
+  // bool _authChecked = false;
+  //
+  // void _checkAuthStatus() async {
+  //   if (_authChecked) return;
+  //   FirebaseAuth auth = FirebaseAuth.instance;
+  //   auth.authStateChanges().listen((User? user) {
+  //     if (user != null) {
+  //       // User is logged in, navigate to HomeScreen
+  //       Navigator.pushNamedAndRemoveUntil(context, HomeScreen.routeName, (route) => false);
+  //     } else {
+  //       // User is not logged in, navigate to LoginScreen
+  //       Navigator.pushNamedAndRemoveUntil(context, LoginScreen.routeName, (route) => false);
+  //     }
+  //   });
+  //   setState(() {
+  //     _authChecked = true; // Update the flag after the check
+  //   });
+  // }
+  //
+  // handleSubmit() async {
+  //   if (!_formKey.currentState!.validate()) return;
+  //   final email = _emailController.value.text;
+  //   final password = _passwordController.value.text;
+  //
+  //   setState(() => _loading = true);
+  //
+  //   //Check if is login or register
+  //   if (_isLogin) {
+  //     await Auth().signInWithEmailAndPassword(email, password);
+  //     _checkAuthStatus();
+  //     showInSnackBar('Login Success! \n$email $password');
+  //   } else {
+  //     await Auth().registerWithEmailAndPassword(email, password);
+  //     _checkAuthStatus();
+  //     showInSnackBar('Register Success! \n$email $password');
+  //
+  //   }
+  //
+  //   setState(() => _loading = false);
+  // }
+  // void showInSnackBar(String value) {
+  //   final snackBar = simpleSnackBar(
+  //     //required
+  //       buildContext: context,
+  //       //required
+  //       messageText: value,
+  //       backgroundColor: Colors.white,
+  //       displayDismiss: false,
+  //       textColor: Colors.black,
+  //       snackBarType: SnackBarType.info);
+  //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  // }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _passwordVisible = true;
+    // _checkAuthStatus();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -25,7 +96,7 @@ class MyApp extends StatelessWidget {
           if (snapshot.hasData) {
             return const HomeScreen();
           } else {
-            return const LoginScreen();
+            return const LoginScreenPage();
           }
         },
       ),
@@ -33,21 +104,38 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
-  static String routeName = 'LoginScreen';
+class LoginScreenPage extends StatefulWidget {
+  const LoginScreenPage({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<LoginScreenPage> createState() => _LoginScreenPageState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenPageState extends State<LoginScreenPage> {
+
   final _formKey = GlobalKey<FormState>();
-  final bool _isLogin = false;
+  final bool _isLogin = true;
   bool _loading = false;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _authChecked = false;
+
+  void _checkAuthStatus() async {
+    if (_authChecked) return;
+    FirebaseAuth auth = FirebaseAuth.instance;
+    auth.authStateChanges().listen((User? user) {
+      if (user != null) {
+        // User is logged in, navigate to HomeScreen
+        Navigator.pushNamedAndRemoveUntil(context, HomeScreen.routeName, (route) => false);
+      } else {
+        // User is not logged in, navigate to LoginScreen
+        Navigator.pushNamedAndRemoveUntil(context, LoginScreen.routeName, (route) => false);
+      }
+    });
+    setState(() {
+      _authChecked = true; // Update the flag after the check
+    });
+  }
 
   handleSubmit() async {
     if (!_formKey.currentState!.validate()) return;
@@ -59,9 +147,11 @@ class _LoginScreenState extends State<LoginScreen> {
     //Check if is login or register
     if (_isLogin) {
       await Auth().signInWithEmailAndPassword(email, password);
+      // _checkAuthStatus();
       showInSnackBar('Login Success! \n$email $password');
     } else {
       await Auth().registerWithEmailAndPassword(email, password);
+      // _checkAuthStatus();
       showInSnackBar('Register Success! \n$email $password');
 
     }
@@ -79,13 +169,6 @@ class _LoginScreenState extends State<LoginScreen> {
         textColor: Colors.black,
         snackBarType: SnackBarType.info);
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _passwordVisible = true;
   }
 
   @override
@@ -118,11 +201,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       Text(
                         'Welcome User',
                         style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                              color: kTextWhiteColor,
-                              fontSize: 20.0,
-                              fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.w500,
-                            ),
+                          color: kTextWhiteColor,
+                          fontSize: 20.0,
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ],
                   ),
@@ -135,7 +218,7 @@ class _LoginScreenState extends State<LoginScreen> {
               margin: const EdgeInsets.all(20),
               decoration: const BoxDecoration(
                 borderRadius:
-                    BorderRadius.all(Radius.circular(kDefaultPadding * 3)),
+                BorderRadius.all(Radius.circular(kDefaultPadding * 3)),
                 color: kOtherColor,
               ),
               child: Padding(
@@ -182,7 +265,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               'Forgot Password',
                               textAlign: TextAlign.end,
                               style:
-                                  TextStyle(fontSize: 16, color: kPrimaryColor),
+                              TextStyle(fontSize: 16, color: kPrimaryColor),
                             ),
                           )
                         ],
@@ -253,8 +336,8 @@ class _LoginScreenState extends State<LoginScreen> {
               });
             },
           )
-          // hintText: 'x x x x x x x x',
-          ),
+        // hintText: 'x x x x x x x x',
+      ),
       validator: (value) {
         if (value!.length < 5) {
           return 'Password must be more than 6 characters';

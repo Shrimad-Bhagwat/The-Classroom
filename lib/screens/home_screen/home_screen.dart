@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -181,7 +182,7 @@ class HomeScreen extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              XCards(onPress: (){debugPrint('Assignment');}, icon: 'assets/icons/assignment.svg', xtext: 'Assignment'),
+                              XCards(onPress: (){debugPrint('Assignment'); FirebaseAuth.instance.signOut();}, icon: 'assets/icons/assignment.svg', xtext: 'Assignment'),
                               XCards(onPress: (){
                                 debugPrint('Chats');
                                 Navigator.pushNamedAndRemoveUntil(context,
