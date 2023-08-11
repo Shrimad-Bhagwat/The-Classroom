@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:simple_snackbar/simple_snackbar.dart';
 import 'package:the_classroom/constants.dart';
 import 'package:the_classroom/screens/home_screen/home_screen.dart';
 
@@ -58,11 +59,26 @@ class _LoginScreenState extends State<LoginScreen> {
     //Check if is login or register
     if (_isLogin) {
       await Auth().signInWithEmailAndPassword(email, password);
+      showInSnackBar('Login Success! \n$email $password');
     } else {
       await Auth().registerWithEmailAndPassword(email, password);
+      showInSnackBar('Register Success! \n$email $password');
+
     }
 
     setState(() => _loading = false);
+  }
+  void showInSnackBar(String value) {
+    final snackBar = simpleSnackBar(
+      //required
+        buildContext: context,
+        //required
+        messageText: value,
+        backgroundColor: Colors.white,
+        displayDismiss: false,
+        textColor: Colors.black,
+        snackBarType: SnackBarType.info);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override
