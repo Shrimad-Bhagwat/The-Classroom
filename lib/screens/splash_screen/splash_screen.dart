@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:the_classroom/constants.dart';
 import 'package:the_classroom/screens/login_screen/login_screen.dart';
 
+
 class SplashScreen extends StatelessWidget {
   const SplashScreen({Key? key}) : super(key: key);
   static String routeName = 'SplashScreen';
 
   @override
   Widget build(BuildContext context) {
-    Future.delayed(Duration(seconds: 5),(){
+    Future.delayed(const Duration(seconds: 5),(){
       Navigator.pushNamedAndRemoveUntil(context, LoginScreen.routeName, (route) => false);
     });
     return Scaffold(

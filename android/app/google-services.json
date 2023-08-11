@@ -1,42 +1,42 @@
 {
   "project_info": {
-    "project_number": "821592209911",
-    "project_id": "the-classroom-479b6",
-    "storage_bucket": "the-classroom-479b6.appspot.com"
+    "project_number": "739142156848",
+    "firebase_url": "https://the-classroom-15b52-default-rtdb.firebaseio.com",
+    "project_id": "the-classroom-15b52",
+    "storage_bucket": "the-classroom-15b52.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:821592209911:android:bccdcbfaed4d55bdef96f2",
+        "mobilesdk_app_id": "1:739142156848:android:2cc84a342c440b6651a3f5",
         "android_client_info": {
           "package_name": "com.shrimadbhagwat.theclassroom.the_classroom"
         }
       },
       "oauth_client": [
         {
-          "client_id": "821592209911-m8o7pmn5vibad0nabkn6gmej2krvt2hl.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.shrimadbhagwat.theclassroom.the_classroom",
-            "certificate_hash": "62977a9f21686d213d02702aac033a0dbeb57f90"
-          }
-        },
-        {
-          "client_id": "821592209911-b714p1ua8uhkic1o961ra5eqrskiedcr.apps.googleusercontent.com",
+          "client_id": "739142156848-1qko9svq1tbjqsma8oammjcu2m34hsug.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDUnaJsmWec9Y4I0ppb2x_5tUg9fABw4mU"
+          "current_key": "AIzaSyDhGqiIE1LAO_g0OltiYgZqap7EpRU_lUA"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "821592209911-b714p1ua8uhkic1o961ra5eqrskiedcr.apps.googleusercontent.com",
+              "client_id": "739142156848-1qko9svq1tbjqsma8oammjcu2m34hsug.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "739142156848-1urb6ii11g4v5kv7cbkbdsr8eopu19if.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example"
+              }
             }
           ]
         }

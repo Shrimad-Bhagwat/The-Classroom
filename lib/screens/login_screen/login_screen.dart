@@ -1,10 +1,37 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:the_classroom/constants.dart';
 import 'package:the_classroom/screens/home_screen/home_screen.dart';
 
+import '../../auth.dart';
 import '../../components/custom_buttons.dart';
 
 late bool _passwordVisible;
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'The Classroom Auth',
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return const HomeScreen();
+          } else {
+            return const LoginScreen();
+          }
+        },
+      ),
+    );
+  }
+}
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -16,6 +43,27 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
+  final bool _isLogin = false;
+  bool _loading = false;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  handleSubmit() async {
+    if (!_formKey.currentState!.validate()) return;
+    final email = _emailController.value.text;
+    final password = _passwordController.value.text;
+
+    setState(() => _loading = true);
+
+    //Check if is login or register
+    if (_isLogin) {
+      await Auth().signInWithEmailAndPassword(email, password);
+    } else {
+      await Auth().registerWithEmailAndPassword(email, password);
+    }
+
+    setState(() => _loading = false);
+  }
 
   @override
   void initState() {
@@ -87,15 +135,30 @@ class _LoginScreenState extends State<LoginScreen> {
                           sizedBox,
                           buildPasswordField(),
                           sizedBox,
-                          DefaultButton(
-                              onPress: () {
-                                if (_formKey.currentState!.validate()) {
-                                  // go to next activity
-                                  Navigator.pushNamedAndRemoveUntil(context,
-                                      HomeScreen.routeName, (route) => false);
-                                }
-                              },
-                              titleB: 'SIGN IN'),
+                          ElevatedButton(
+                            onPressed: () => handleSubmit(),
+                            child: _loading
+                                ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
+                                : Text(_isLogin ? 'Login' : 'Register'),
+                          ),
+                          // DefaultButton(
+                          //     onPress: () {
+                          //       handleSubmit();
+                          //
+                          //       // if (_formKey.currentState!.validate()) {
+                          //       //   // go to next activity
+                          //       //   Navigator.pushNamedAndRemoveUntil(context,
+                          //       //       HomeScreen.routeName, (route) => false);
+                          //       }
+                          //     },
+                          //     titleB: 'SIGN IN'),
                           sizedBox,
                           const Align(
                             alignment: Alignment.centerRight,
@@ -122,6 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextFormField buildEmailField() {
     return TextFormField(
       textAlign: TextAlign.start,
+      controller: _emailController,
       keyboardType: TextInputType.emailAddress,
       style: const TextStyle(
         color: kTextBlackColor,
@@ -135,7 +199,7 @@ class _LoginScreenState extends State<LoginScreen> {
         hintText: 'john.wick2020@vitbhopal.ac.in',
       ),
       validator: (value) {
-        RegExp regExp = new RegExp(emailPattern);
+        RegExp regExp = RegExp(emailPattern);
         if (value == null || value.isEmpty) {
           return 'Please enter all the details';
         } else if (!regExp.hasMatch(value)) {
@@ -147,6 +211,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   TextFormField buildPasswordField() {
     return TextFormField(
+      controller: _passwordController,
       obscureText: _passwordVisible,
       textAlign: TextAlign.start,
       keyboardType: TextInputType.visiblePassword,
