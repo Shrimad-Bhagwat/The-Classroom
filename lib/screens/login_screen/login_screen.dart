@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:simple_snackbar/simple_snackbar.dart';
+import 'package:the_classroom/components/theme.dart';
 import 'package:the_classroom/constants.dart';
 import 'package:the_classroom/screens/home_screen/home_screen.dart';
 
@@ -112,7 +113,6 @@ class LoginScreenPage extends StatefulWidget {
 }
 
 class _LoginScreenPageState extends State<LoginScreenPage> {
-
   final _formKey = GlobalKey<FormState>();
   final bool _isLogin = true;
   bool _loading = false;
@@ -126,10 +126,12 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
     auth.authStateChanges().listen((User? user) {
       if (user != null) {
         // User is logged in, navigate to HomeScreen
-        Navigator.pushNamedAndRemoveUntil(context, HomeScreen.routeName, (route) => false);
+        Navigator.pushNamedAndRemoveUntil(
+            context, HomeScreen.routeName, (route) => false);
       } else {
         // User is not logged in, navigate to LoginScreen
-        Navigator.pushNamedAndRemoveUntil(context, LoginScreen.routeName, (route) => false);
+        Navigator.pushNamedAndRemoveUntil(
+            context, LoginScreen.routeName, (route) => false);
       }
     });
     setState(() {
@@ -153,14 +155,14 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
       await Auth().registerWithEmailAndPassword(email, password);
       // _checkAuthStatus();
       showInSnackBar('Register Success! \n$email $password');
-
     }
 
     setState(() => _loading = false);
   }
+
   void showInSnackBar(String value) {
     final snackBar = simpleSnackBar(
-      //required
+        //required
         buildContext: context,
         //required
         messageText: value,
@@ -173,112 +175,116 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      child: Scaffold(
-        body: ListView(
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height / 2.5,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    'assets/images/classroom_icon.png',
-                    height: 200,
-                    width: 200,
-                  ),
-                  kHalfSizedBox,
-                  Column(
+    return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: getAppTheme(context),
+        home: GestureDetector(
+          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+          child: Scaffold(
+            body: ListView(
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height / 2.5,
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        'Login',
-                        style: Theme.of(context).textTheme.bodyLarge,
+                      Image.asset(
+                        'assets/images/classroom_icon.png',
+                        height: 200,
+                        width: 200,
                       ),
-                      sizedBox,
-                      Text(
-                        'Welcome User',
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: kTextWhiteColor,
-                          fontSize: 20.0,
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w500,
-                        ),
+                      kHalfSizedBox,
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Login',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                          sizedBox,
+                          Text(
+                            'Welcome User',
+                            style:
+                                Theme.of(context).textTheme.bodySmall!.copyWith(
+                                      color: kTextWhiteColor,
+                                      fontSize: 20.0,
+                                      fontStyle: FontStyle.normal,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height / 2.3,
-              margin: const EdgeInsets.all(20),
-              decoration: const BoxDecoration(
-                borderRadius:
-                BorderRadius.all(Radius.circular(kDefaultPadding * 3)),
-                color: kOtherColor,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(kDefaultPadding),
-                child: Column(
-                  children: [
-                    Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          sizedBox,
-                          buildEmailField(),
-                          sizedBox,
-                          buildPasswordField(),
-                          sizedBox,
-                          ElevatedButton(
-                            onPressed: () => handleSubmit(),
-                            child: _loading
-                                ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2,
-                              ),
-                            )
-                                : Text(_isLogin ? 'Login' : 'Register'),
-                          ),
-                          // DefaultButton(
-                          //     onPress: () {
-                          //       handleSubmit();
-                          //
-                          //       // if (_formKey.currentState!.validate()) {
-                          //       //   // go to next activity
-                          //       //   Navigator.pushNamedAndRemoveUntil(context,
-                          //       //       HomeScreen.routeName, (route) => false);
-                          //       }
-                          //     },
-                          //     titleB: 'SIGN IN'),
-                          sizedBox,
-                          const Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              'Forgot Password',
-                              textAlign: TextAlign.end,
-                              style:
-                              TextStyle(fontSize: 16, color: kPrimaryColor),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
                 ),
-              ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height / 2.3,
+                  margin: const EdgeInsets.all(20),
+                  decoration: const BoxDecoration(
+                    borderRadius:
+                        BorderRadius.all(Radius.circular(kDefaultPadding * 3)),
+                    color: kOtherColor,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(kDefaultPadding),
+                    child: Column(
+                      children: [
+                        Form(
+                          key: _formKey,
+                          child: Column(
+                            children: [
+                              sizedBox,
+                              buildEmailField(),
+                              sizedBox,
+                              buildPasswordField(),
+                              sizedBox,
+                              ElevatedButton(
+                                onPressed: () => handleSubmit(),
+                                child: _loading
+                                    ? const SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : Text(_isLogin ? 'Login' : 'Register'),
+                              ),
+                              // DefaultButton(
+                              //     onPress: () {
+                              //       handleSubmit();
+                              //
+                              //       // if (_formKey.currentState!.validate()) {
+                              //       //   // go to next activity
+                              //       //   Navigator.pushNamedAndRemoveUntil(context,
+                              //       //       HomeScreen.routeName, (route) => false);
+                              //       }
+                              //     },
+                              //     titleB: 'SIGN IN'),
+                              sizedBox,
+                              const Align(
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  'Forgot Password',
+                                  textAlign: TextAlign.end,
+                                  style: TextStyle(
+                                      fontSize: 16, color: kPrimaryColor),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-    );
+          ),
+        ));
   }
 
   TextFormField buildEmailField() {
@@ -336,8 +342,8 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
               });
             },
           )
-        // hintText: 'x x x x x x x x',
-      ),
+          // hintText: 'x x x x x x x x',
+          ),
       validator: (value) {
         if (value!.length < 5) {
           return 'Password must be more than 6 characters';
