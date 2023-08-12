@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -23,10 +24,13 @@ final List<Notice> notices = [
     content: 'This is the content of Notice 3.',
   ),
 ];
+final FirebaseAuth _auth = FirebaseAuth.instance;
+User? _currentUser;
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
   static String routeName = 'HomeScreen';
+
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +67,8 @@ class HomeScreen extends StatelessWidget {
                                         fontSize: 20.0),
                               ),
                               Text(
-                                "User",
+                                // "User",
+                                _auth.currentUser!.email.toString(),
                                 style: Theme.of(context)
                                     .textTheme
                                     .titleMedium!
