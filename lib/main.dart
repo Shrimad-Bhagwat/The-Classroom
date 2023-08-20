@@ -22,6 +22,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: kPrimaryColor,
         primaryColor: kPrimaryColor,
+        appBarTheme: const AppBarTheme(
+            color: kPrimaryColor,
+          elevation: 0
+        ),
         textTheme: GoogleFonts.sourceSansProTextTheme(
           Theme.of(context).textTheme.apply().copyWith(
             bodyLarge: const TextStyle(

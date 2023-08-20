@@ -124,12 +124,17 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
   
   //    Forgot Password
   Future<void> resetPassword() async {
+    final email = _emailController.value.text;
     setState(() => _loading = true);
     try {
-      await FirebaseAuth.instance.sendPasswordResetEmail(email: _emailController.text);
+      await FirebaseAuth.instance.sendPasswordResetEmail(email:email);
       showToastSuccess('Password Reset Email sent.');
     } catch (e) {
-      showToastError('An error occurred ${e.toString()}');
+      if(email=='') {
+        showToastError('Enter email address!');
+      } else {
+        showToastError('An error occurred ${e.toString()}');
+      }
     }
     setState(() => _loading = false);
   }
