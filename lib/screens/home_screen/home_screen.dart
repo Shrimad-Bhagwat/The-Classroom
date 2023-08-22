@@ -10,24 +10,13 @@ import 'package:the_classroom/screens/assignment_screen/assignment_screen.dart';
 import 'package:the_classroom/screens/chat_screen/chat_screen.dart';
 import 'package:the_classroom/screens/home_screen/widgets/student_data.dart';
 import 'package:the_classroom/screens/my_profile/my_profile.dart';
+import 'package:the_classroom/screens/result_screen/result_screen.dart';
 
 import '../../components/theme.dart';
 import '../../constants.dart';
+import 'data/notices.dart';
 
-final List<Notice> notices = [
-  Notice(
-    title: 'Notice 1',
-    content: 'This is the content of Notice 1',
-  ),
-  Notice(
-    title: 'Notice 2',
-    content: 'This is the content of Notice 2.',
-  ),
-  Notice(
-    title: 'Notice 3',
-    content: 'This is the content of Notice 3.',
-  ),
-];
+
 final FirebaseAuth _auth = FirebaseAuth.instance;
 User? _currentUser;
 
@@ -171,6 +160,7 @@ class HomeScreen extends StatelessWidget {
                                   XCards(
                                       onPress: () {
                                         debugPrint('Result');
+                                        Navigator.push(context, CupertinoPageRoute(builder: (context) => const ResultScreen(),),);
                                       },
                                       icon: 'assets/icons/result.svg',
                                       xtext: 'Result'),

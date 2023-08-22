@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:the_classroom/components/theme.dart';
+import 'package:the_classroom/components/toast.dart';
 import 'package:the_classroom/constants.dart';
 import 'package:the_classroom/screens/assignment_screen/data/assignment_data.dart';
 
@@ -111,6 +112,7 @@ class AssignmentScreen extends StatelessWidget {
                                     title: 'To Be Submitted',
                                     onPress: () {
                                       // submit assignment
+                                      showToast('Assignment Submitted');
                                     },
                                   ),
                               ],
