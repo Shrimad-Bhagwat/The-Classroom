@@ -9,6 +9,7 @@ import 'package:the_classroom/screens/home_screen/home_screen.dart';
 
 import '../../auth.dart';
 import '../../components/custom_buttons.dart';
+import '../../components/toast.dart';
 
 late bool _passwordVisible;
 
@@ -60,17 +61,6 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
   bool _loading = false;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
-  // Toast Messages
-  void showToastError(String message) => Fluttertoast.showToast(
-        msg: message,
-        backgroundColor: Colors.red,
-      );
-
-  void showToastSuccess(String message) => Fluttertoast.showToast(
-        msg: message,
-        backgroundColor: Colors.green,
-      );
 
   // Firebase Auth
   //    Registration

@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:the_classroom/screens/assignment_screen/assignment_screen.dart';
 import 'package:the_classroom/screens/chat_screen/chat_screen.dart';
 import 'package:the_classroom/screens/home_screen/widgets/student_data.dart';
 import 'package:the_classroom/screens/my_profile/my_profile.dart';
@@ -140,7 +141,8 @@ class HomeScreen extends StatelessWidget {
                                   XCards(
                                       onPress: () {
                                         debugPrint('Assignment');
-                                        FirebaseAuth.instance.signOut();
+                                        Navigator.push(context, CupertinoPageRoute(builder: (context) => const AssignmentScreen(),),);
+
                                       },
                                       icon: 'assets/icons/assignment.svg',
                                       xtext: 'Assignment'),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter/cupertino.dart';
+import 'package:the_classroom/screens/assignment_screen/assignment_screen.dart';
 import 'package:the_classroom/screens/chat_screen/chat_screen.dart';
 import 'package:the_classroom/screens/home_screen/home_screen.dart';
 import 'package:the_classroom/screens/login_screen/login_screen.dart';
@@ -14,4 +15,5 @@ Map<String,WidgetBuilder> routes = {
   HomeScreen.routeName : (context) => const HomeScreen(),
   ChatScreen.routeName : (context) => const ChatScreen(),
   MyProfileScreen.routeName : (context) => const MyProfileScreen(),
+  AssignmentScreen.routeName : (context) => const AssignmentScreen(),
 };

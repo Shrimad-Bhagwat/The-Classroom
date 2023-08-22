@@ -1,5 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:the_classroom/components/toast.dart';
 import 'package:the_classroom/constants.dart';
+import 'package:the_classroom/screens/login_screen/login_screen.dart';
 
 import '../../components/theme.dart';
 
@@ -18,7 +22,20 @@ class MyProfileScreen extends StatelessWidget {
       home: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: const Text('My Profile'),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('My Profile'),
+              InkWell(
+                child: const Icon(Icons.logout_rounded),
+                onTap: () {
+                  FirebaseAuth.instance.signOut();
+                  Navigator.pop(context);
+                  showToastSuccess('Logout Success!');
+                },
+              )
+            ],
+          ),
           leading: InkWell(
             onTap: () {
               Navigator.pop(context);
@@ -104,9 +121,18 @@ class MyProfileScreen extends StatelessWidget {
                 ],
               ),
               kHalfSizedBox,
-              const ProfileDetailColumn(title: "Father's Name",value: 'Father Name',),
-              const ProfileDetailColumn(title: 'Phone',value: '888889684',),
-              const ProfileDetailColumn(title: 'Email',value: 'test@gmail.com',),
+              const ProfileDetailColumn(
+                title: "Father's Name",
+                value: 'Father Name',
+              ),
+              const ProfileDetailColumn(
+                title: 'Phone',
+                value: '888889684',
+              ),
+              const ProfileDetailColumn(
+                title: 'Email',
+                value: 'test@gmail.com',
+              ),
             ],
           ),
         ),
@@ -174,12 +200,14 @@ class ProfileDetailRow extends StatelessWidget {
 
 class ProfileDetailColumn extends StatelessWidget {
   const ProfileDetailColumn({super.key, this.title, this.value});
+
   final title, value;
+
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(
-          vertical: kDefaultPadding/4, horizontal: kDefaultPadding),
+          vertical: kDefaultPadding / 4, horizontal: kDefaultPadding),
       width: MediaQuery.of(context).size.width,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -190,10 +218,7 @@ class ProfileDetailColumn extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText1!
-                    .copyWith(
+                style: Theme.of(context).textTheme.bodyText1!.copyWith(
                     color: kTextLightColor,
                     fontWeight: FontWeight.w600,
                     fontSize: 15.0),
@@ -201,10 +226,7 @@ class ProfileDetailColumn extends StatelessWidget {
               kHalfSizedBox,
               Text(
                 value,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText1!
-                    .copyWith(
+                style: Theme.of(context).textTheme.bodyText1!.copyWith(
                     color: kTextBlackColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 15.0),
