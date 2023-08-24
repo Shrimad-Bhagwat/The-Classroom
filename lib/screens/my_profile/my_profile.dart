@@ -1,18 +1,151 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:the_classroom/components/toast.dart';
 import 'package:the_classroom/constants.dart';
 import 'package:the_classroom/screens/login_screen/login_screen.dart';
+import 'package:the_classroom/screens/my_profile/data/profile_data.dart';
 
 import '../../components/theme.dart';
 
 final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-class MyProfileScreen extends StatelessWidget {
+final FirebaseAuth _auth = FirebaseAuth.instance;
+final _currentUser = _auth.currentUser;
+final DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
+
+// Custom UID
+String myemail = _currentUser!.email.toString();
+
+// final pattern = RegExp(r'[!@#\$%^&*()_+{}\[\]:;<>,.?/~\\-]');
+// String? customUID = myemail?.replaceAll(pattern, "_");
+String? customUID = myemail.split("@")[0];
+
+void storeData() {
+  if (_currentUser != null) {
+    showToast(customUID.toString());
+    databaseReference.child('users/${_currentUser!.uid}_$customUID/data').set({
+      'id': DateTime.now().microsecondsSinceEpoch.toString(),
+      'email': _currentUser!.email.toString(),
+      'name': '',
+      'class': '',
+      'roll_no': '',
+      'reg_no': '',
+      'acad_year': '',
+      'degree': '',
+      'course': '',
+      'specialization': '',
+      'dob': '',
+      'father_name': '',
+      'phone': '',
+      // Add more data fields as needed
+    });
+  }
+}
+
+class MyProfileScreen extends StatefulWidget {
   const MyProfileScreen({super.key});
 
   static String routeName = 'MyProfileScreen';
+
+  @override
+  State<MyProfileScreen> createState() => _MyProfileScreenState();
+}
+
+class _MyProfileScreenState extends State<MyProfileScreen> {
+  String nameText = '';
+  String rollNoText = '';
+  String regNoText = '';
+  String acadYearText = '';
+  String degreeText = '';
+  String classText = '';
+  String courseText = '';
+  String specializationText = '';
+  String dobText = '';
+  String fatherNameText = '';
+  String phoneText = '';
+  String emailText = '';
+
+  @override
+  void initState() {
+    super.initState();
+    // getData();
+    fetchData();
+    // showToast(myemail);
+  }
+
+  bool isLoading = true;
+
+  clearData() {
+    setState(() {
+      nameText = '';
+      classText = '';
+      rollNoText = '';
+      regNoText = '';
+      acadYearText = '';
+      degreeText = '';
+      courseText = '';
+      specializationText = '';
+      dobText = '';
+      fatherNameText = '';
+      phoneText = '';
+      emailText = '';
+    });
+  }
+  //  Future<void> getData() async{
+  //    Map<dynamic, dynamic> data = fetchData() as Map;
+  //   nameText = data['name'];
+  //   showToast("Data $nameText");
+  //   classText = data['class'];
+  //   rollNoText = data['roll_no'];
+  //   regNoText = data['reg_no'];
+  //   acadYearText = data['acad_year'];
+  //   degreeText = data['degree'];
+  //   courseText = data['course'];
+  //   specializationText =
+  //       data['specialization'];
+  //   dobText = data['dob'];
+  //   fatherNameText = data['father_name'];
+  //   phoneText = data['phone'];
+  //   emailText = data['email'];
+  // }
+  Future<void> fetchData() async {
+    DatabaseReference ref = FirebaseDatabase.instance.ref();
+
+    if (_currentUser != null) {
+      final snapshot =
+          await ref.child('users/${_currentUser!.uid}_$customUID/data').get();
+      if (snapshot.exists) {
+        setState(() {
+          nameText = snapshot.child('name').value.toString();
+          print("User name $nameText");
+          classText = snapshot.child('class').value.toString();
+          rollNoText = snapshot.child('roll_no').value.toString();
+          regNoText = snapshot.child('reg_no').value.toString();
+          acadYearText = snapshot.child('acad_year').value.toString();
+          degreeText = snapshot.child('degree').value.toString();
+          courseText = snapshot.child('course').value.toString();
+          specializationText =
+              snapshot.child('specialization').value.toString();
+          dobText = snapshot.child('dob').value.toString();
+          fatherNameText = snapshot.child("father_name").value.toString();
+          phoneText = snapshot.child('phone').value.toString();
+          emailText = snapshot.child('email').value.toString();
+
+          isLoading = false;
+        });
+      } else {
+        showToastError('No data available!');
+        isLoading = false;
+      }
+    } else {
+      showToastError('User not found!');
+      isLoading = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +162,12 @@ class MyProfileScreen extends StatelessWidget {
               InkWell(
                 child: const Icon(Icons.logout_rounded),
                 onTap: () {
+                  // retrieveUserData();
+                  clearData();
                   FirebaseAuth.instance.signOut();
                   Navigator.pop(context);
                   showToastSuccess('Logout Success!');
+                  // storeData();
                 },
               )
             ],
@@ -56,10 +192,10 @@ class MyProfileScreen extends StatelessWidget {
                       bottomRight: Radius.circular(kDefaultPadding * 2),
                       bottomLeft: Radius.circular(kDefaultPadding * 2),
                     )),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CircleAvatar(
+                    const CircleAvatar(
                       maxRadius: 50.0,
                       minRadius: 50.0,
                       backgroundColor: kSecondaryColor,
@@ -72,8 +208,8 @@ class MyProfileScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Your Name',
-                          style: TextStyle(
+                          nameText,
+                          style: const TextStyle(
                             color: kTextWhiteColor,
                             fontSize: 20.0,
                             fontStyle: FontStyle.normal,
@@ -82,8 +218,8 @@ class MyProfileScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'Class XII A | Roll no. : 10',
-                          style: TextStyle(
+                          'Class $classText | Roll no. : $rollNoText',
+                          style: const TextStyle(
                             color: kTextWhiteColor,
                             fontSize: 14.0,
                             fontStyle: FontStyle.normal,
@@ -97,41 +233,40 @@ class MyProfileScreen extends StatelessWidget {
                 ),
               ),
               sizedBox,
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ProfileDetailRow(
-                      title: 'Registration no.', value: '20BCG10000'),
-                  ProfileDetailRow(
-                      title: 'Academic Year', value: '2020 - 2024'),
+                  ProfileDetailRow(title: 'Registration no.', value: regNoText),
+                  ProfileDetailRow(title: 'Academic Year', value: acadYearText),
                 ],
               ),
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  ProfileDetailRow(title: 'Degree', value: 'B.Tech.'),
-                  ProfileDetailRow(title: 'Course', value: 'CSE'),
+                  ProfileDetailRow(title: 'Degree', value: degreeText),
+                  ProfileDetailRow(title: 'Course', value: courseText),
                 ],
               ),
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  ProfileDetailRow(title: 'Specialization', value: 'Gaming'),
-                  ProfileDetailRow(title: 'Date of Birth', value: '01-01-2002'),
+                  ProfileDetailRow(
+                      title: 'Specialization', value: specializationText),
+                  ProfileDetailRow(title: 'Date of Birth', value: dobText),
                 ],
               ),
               kHalfSizedBox,
-              const ProfileDetailColumn(
+              ProfileDetailColumn(
                 title: "Father's Name",
-                value: 'Father Name',
+                value: fatherNameText,
               ),
-              const ProfileDetailColumn(
+              ProfileDetailColumn(
                 title: 'Phone',
-                value: '888889684',
+                value: phoneText,
               ),
-              const ProfileDetailColumn(
+              ProfileDetailColumn(
                 title: 'Email',
-                value: 'test@gmail.com',
+                value: emailText,
               ),
             ],
           ),

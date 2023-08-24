@@ -15,14 +15,16 @@ import 'package:the_classroom/screens/result_screen/result_screen.dart';
 import '../../components/theme.dart';
 import '../../constants.dart';
 import 'data/notices.dart';
+import 'package:the_classroom/components/toast.dart';
 
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
-User? _currentUser;
+User? user = _auth.currentUser;
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
   static String routeName = 'HomeScreen';
+
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +59,9 @@ class HomeScreen extends StatelessWidget {
                           onPress: () {
                             // go to profile details screen
                             print('Profile clicked');
+
+
+                            // showToast(user!.email.toString());
                             Navigator.push(context, CupertinoPageRoute(builder: (context) => const MyProfileScreen(),),);
 
                           }),
@@ -138,11 +143,9 @@ class HomeScreen extends StatelessWidget {
                                   XCards(
                                       onPress: () {
                                         debugPrint('Chats');
-                                        // Navigator.pushNamedAndRemoveUntil(
-                                        //     context,
-                                        //     ChatScreen.routeName,
-                                        //     (route) => false);
-                                        Navigator.push(context, CupertinoPageRoute(builder: (context) => const ChatScreen()));
+                                        showToast("${user!.uid} ${_auth.currentUser!.email}");
+
+                                        // Navigator.push(context, CupertinoPageRoute(builder: (context) => const ChatScreen()));
                                       },
                                       icon: 'assets/icons/chat.svg',
                                       xtext: 'Chats'),

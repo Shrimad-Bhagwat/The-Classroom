@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../../constants.dart';
+import '../../my_profile/my_profile.dart';
+import '../home_screen.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 User? _currentUser;
@@ -25,9 +27,7 @@ class StudentName extends StatelessWidget {
         ),
         Text(
           // "User",
-          _auth.currentUser!.email
-              .toString()
-              .split("@")[0],
+          user!.email!.split('@')[0].toString(), // get myName from database
           style: Theme.of(context)
               .textTheme
               .titleMedium!
