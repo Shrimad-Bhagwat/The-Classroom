@@ -27,21 +27,40 @@ String? customUID = myemail.split("@")[0];
 void storeData() {
   if (_currentUser != null) {
     showToast(customUID.toString());
-    databaseReference.child('users/${_currentUser!.uid}_$customUID/data').set({
-      'id': DateTime.now().microsecondsSinceEpoch.toString(),
-      'email': _currentUser!.email.toString(),
-      'name': '',
-      'class': '',
-      'roll_no': '',
-      'reg_no': '',
-      'acad_year': '',
-      'degree': '',
-      'course': '',
-      'specialization': '',
-      'dob': '',
-      'father_name': '',
-      'phone': '',
-      // Add more data fields as needed
+    // String assignmentId = DateTime.now().microsecondsSinceEpoch.toString();
+    String resultId = DateTime.now().microsecondsSinceEpoch.toString();
+    databaseReference.child('users/${_currentUser!.uid}_$customUID/result/$resultId').set({
+      // == Result ==
+      'id' : DateTime.now().microsecondsSinceEpoch.toString(),
+      'subjectName' : 'Physics',
+      'grade' : 'D',
+      'totalMarks' : '100' ,
+      'obtainedMarks' : '61',
+
+
+      // == Assignment ==
+      // 'id' : DateTime.now().microsecondsSinceEpoch.toString(),
+      // 'subjectName' : 'Mathematics',
+      // 'topicName' : 'Algebra',
+      // 'assignDate' : '12 Aug 2023',
+      // 'lastDate' : '19 Dec 2023',
+      // 'status' : 'Pending',
+
+      // == User ==
+      // 'id': DateTime.now().microsecondsSinceEpoch.toString(),
+      // 'email': _currentUser!.email.toString(),
+      // 'name': '',
+      // 'class': '',
+      // 'roll_no': '',
+      // 'reg_no': '',
+      // 'acad_year': '',
+      // 'degree': '',
+      // 'course': '',
+      // 'specialization': '',
+      // 'dob': '',
+      // 'father_name': '',
+      // 'phone': '',
+
     });
   }
 }
@@ -122,6 +141,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         setState(() {
           nameText = snapshot.child('name').value.toString();
           print("User name $nameText");
+          _currentUser?.updateDisplayName(nameText);
           classText = snapshot.child('class').value.toString();
           rollNoText = snapshot.child('roll_no').value.toString();
           regNoText = snapshot.child('reg_no').value.toString();

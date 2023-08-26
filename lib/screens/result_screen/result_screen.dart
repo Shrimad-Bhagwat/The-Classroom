@@ -1,15 +1,32 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:the_classroom/components/theme.dart';
+import 'package:the_classroom/screens/assignment_screen/assignment_screen.dart';
 import 'package:the_classroom/screens/result_screen/components/result_component.dart';
 import 'package:the_classroom/screens/result_screen/data/result_data.dart';
 
 import '../../constants.dart';
 import 'package:collection/collection.dart';
 
-class ResultScreen extends StatelessWidget {
+import '../my_profile/my_profile.dart';
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
+final _currentUser = _auth.currentUser;
+
+class ResultScreen extends StatefulWidget {
   const ResultScreen({super.key});
 
   static String routeName = "ResultScreen";
+
+  @override
+  State<ResultScreen> createState() => _ResultScreenState();
+}
+
+class _ResultScreenState extends State<ResultScreen> {
+  final ref = FirebaseDatabase.instance
+      .ref('users/${_currentUser!.uid}_$customUID/result');
 
   @override
   Widget build(BuildContext context) {
@@ -54,10 +71,7 @@ class ResultScreen extends StatelessWidget {
                     style: Theme.of(context)
                         .textTheme
                         .titleSmall!
-                        .copyWith(
-                        color: kTextWhiteColor,
-                      fontSize: 20.0
-                    ),
+                        .copyWith(color: kTextWhiteColor, fontSize: 20.0),
                   ),
                 ),
               ),
@@ -71,6 +85,7 @@ class ResultScreen extends StatelessWidget {
                   ),
             ),
             Text(
+              // _currentUser!.displayName.toString(),
               'Your Name',
               style: Theme.of(context)
                   .textTheme
@@ -86,13 +101,41 @@ class ResultScreen extends StatelessWidget {
                       topRight: Radius.circular(kDefaultPadding),
                     ),
                     color: kOtherColor),
-                child: ListView.builder(
-                    padding: EdgeInsets.all(kDefaultPadding),
-                    itemCount: result.length,
-                    itemBuilder: (context, index) {
+                child: FirebaseAnimatedList(
+                    query: ref,
+                    padding: const EdgeInsets.all(kDefaultPadding),
+                    duration: const Duration(milliseconds: 300),
+                    // Skeleton Loading
+                    defaultChild: Container(
+                      decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(kDefaultPadding),
+                            topRight: Radius.circular(kDefaultPadding),
+                          ),
+                          color: kOtherColor),
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          color: kTextWhiteColor,
+                          borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(kDefaultPadding),
+                            topLeft: Radius.circular(kDefaultPadding),
+                          ),
+                        ),
+                        child: const Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            kHalfSizedBox,
+                            ResultSkeleton(),
+                            ResultSkeleton(),
+                            ResultSkeleton(),
+                          ],
+                        ),
+                      ),
+                    ),
+                    itemBuilder: (context, snapshot, animation, index) {
                       return Container(
-                        margin: EdgeInsets.only(bottom: kDefaultPadding),
-                        padding: EdgeInsets.all(kDefaultPadding / 2),
+                        margin: const EdgeInsets.only(bottom: kDefaultPadding),
+                        padding: const EdgeInsets.all(kDefaultPadding / 2),
                         decoration: const BoxDecoration(
                             color: kPrimaryColor,
                             borderRadius: BorderRadius.all(
@@ -106,7 +149,10 @@ class ResultScreen extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  result[index].subjectName,
+                                  snapshot
+                                      .child('subjectName')
+                                      .value
+                                      .toString(),
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium!
@@ -119,7 +165,7 @@ class ResultScreen extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Text(
-                                      '${result[index].obtainedMarks} / ${result[index].totalMarks}',
+                                      '${snapshot.child('obtainedMarks').value.toString()} / ${snapshot.child('totalMarks').value.toString()}',
                                       style: Theme.of(context)
                                           .textTheme
                                           .titleSmall!
@@ -128,9 +174,10 @@ class ResultScreen extends StatelessWidget {
                                     Stack(
                                       children: [
                                         Container(
-                                          width: result[index]
-                                              .totalMarks
-                                              .toDouble(),
+                                          width: double.parse(snapshot
+                                              .child('totalMarks')
+                                              .value
+                                              .toString()),
                                           height: 15.0,
                                           decoration: BoxDecoration(
                                             color: Colors.grey[700],
@@ -141,12 +188,17 @@ class ResultScreen extends StatelessWidget {
                                           ),
                                         ),
                                         Container(
-                                          width: result[index]
-                                              .obtainedMarks
-                                              .toDouble(),
+                                          width: double.parse(snapshot
+                                              .child('obtainedMarks')
+                                              .value
+                                              .toString()),
                                           height: 15.0,
                                           decoration: BoxDecoration(
-                                            color: result[index].grade == 'D'
+                                            color: snapshot
+                                                        .child('grade')
+                                                        .value
+                                                        .toString() ==
+                                                    'D'
                                                 ? kErrorBorderColor
                                                 : kTextWhiteColor,
                                             borderRadius:
@@ -158,7 +210,7 @@ class ResultScreen extends StatelessWidget {
                                       ],
                                     ),
                                     Text(
-                                      result[index].grade,
+                                      snapshot.child('grade').value.toString(),
                                       style: Theme.of(context)
                                           .textTheme
                                           .titleSmall!
@@ -176,6 +228,40 @@ class ResultScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class ResultSkeleton extends StatelessWidget {
+  const ResultSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+          horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+      margin: const EdgeInsets.symmetric(
+          horizontal: kDefaultPadding, vertical: kDefaultPadding / 2),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.05),
+        borderRadius: const BorderRadius.all(Radius.circular(kDefaultPadding)),
+      ),
+      child: const Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          LoadingBox(height: 25, width: 100),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              LoadingBox(height: 20, width: 60),
+              kHalfSizedBox,
+              LoadingBox(height: 20, width: 120),
+              kHalfSizedBox,
+              LoadingBox(height: 20, width: 30),
+            ],
+          )
+        ],
       ),
     );
   }
