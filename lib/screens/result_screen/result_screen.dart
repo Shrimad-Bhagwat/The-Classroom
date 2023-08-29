@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:the_classroom/components/theme.dart';
+import 'package:the_classroom/components/toast.dart';
 import 'package:the_classroom/screens/assignment_screen/assignment_screen.dart';
 import 'package:the_classroom/screens/result_screen/components/result_component.dart';
 import 'package:the_classroom/screens/result_screen/data/result_data.dart';
@@ -15,6 +16,34 @@ import '../my_profile/my_profile.dart';
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final _currentUser = _auth.currentUser;
 
+Future<void> fetchResultData() async {
+  final ref = FirebaseDatabase.instance
+      .ref('users/${_currentUser!.uid}_$customUID/result');
+
+  final dataSnapshot = await ref.get();
+
+  // Clear the existing data in the result list.
+  result.clear();
+
+  if (dataSnapshot.value != null) {
+    // Convert the Firebase data to a Map.
+    Map<dynamic, dynamic> data = dataSnapshot.value as Map<dynamic, dynamic>;
+    print(data);
+    // Loop through the data and create ResultData objects.
+    data.forEach((key, value) {
+      ResultData resultData = ResultData(
+        value['subjectName'],
+        value['totalMarks'],
+        value['obtainedMarks'],
+        value['grade'],
+      );
+      result.add(resultData);
+    });
+
+  }
+}
+
+
 class ResultScreen extends StatefulWidget {
   const ResultScreen({super.key});
 
@@ -22,16 +51,26 @@ class ResultScreen extends StatefulWidget {
 
   @override
   State<ResultScreen> createState() => _ResultScreenState();
-}
 
+}
+// List<ResultData> result= [];
+int oMarks=-1, tMarks=-1;
 class _ResultScreenState extends State<ResultScreen> {
   final ref = FirebaseDatabase.instance
       .ref('users/${_currentUser!.uid}_$customUID/result');
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchResultData();
+    oMarks = result.map((e) => e.obtainedMarks).sum.toInt();
+    tMarks = result.map((e) => e.totalMarks).sum.toInt();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    int oMarks = result.map((e) => e.obtainedMarks).sum.toInt();
-    int tMarks = result.map((e) => e.totalMarks).sum.toInt();
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: getAppTheme(context),

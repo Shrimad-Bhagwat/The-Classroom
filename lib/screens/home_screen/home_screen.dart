@@ -1,31 +1,46 @@
 import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:the_classroom/screens/assignment_screen/assignment_screen.dart';
-import 'package:the_classroom/screens/chat_screen/chat_screen.dart';
 import 'package:the_classroom/screens/home_screen/widgets/student_data.dart';
 import 'package:the_classroom/screens/my_profile/my_profile.dart';
 import 'package:the_classroom/screens/result_screen/result_screen.dart';
 
+import '../../components/notices.dart';
 import '../../components/theme.dart';
 import '../../constants.dart';
-import 'data/notices.dart';
 import 'package:the_classroom/components/toast.dart';
 
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 User? user = _auth.currentUser;
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
   static String routeName = 'HomeScreen';
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
 
+class _HomeScreenState extends State<HomeScreen> {
+  final ref = FirebaseDatabase.instance
+      .ref('notices');
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // storeNoticeData();
+    fetchNoticeData();
+
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -99,29 +114,32 @@ class HomeScreen extends StatelessWidget {
                       Container(
                         alignment: Alignment.topCenter,
                         height: 160,
-                        child: SingleChildScrollView(
+                        child: FirebaseAnimatedList(
                           scrollDirection: Axis.horizontal,
                           // Set the desired scroll direction here
-                          child: Row(
-                            children: notices.map((notice) {
-                              return Card(
-                                color: kSecondaryColor,
-                                margin: EdgeInsets.all(16.0),
-                                child: Container(
-                                  width:
-                                      MediaQuery.of(context).size.width / 2.6,
-                                  height: 200,
-                                  padding:
-                                      const EdgeInsets.fromLTRB(4, 8, 4, 8),
-                                  // Set the desired width here
-                                  child: ListTile(
-                                    title: Text(notice.title),
-                                    subtitle: Text(notice.content),
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                          ),
+                          query: ref,
+                          itemBuilder: (context, snapshot, animation, index) {
+                             return Row(
+                               children: notices.map((notice) {
+                                 return Card(
+                                   color: kSecondaryColor,
+                                   margin: const EdgeInsets.all(16.0),
+                                   child: Container(
+                                     width:
+                                     MediaQuery.of(context).size.width / 2.6,
+                                     height: 200,
+                                     padding:
+                                     const EdgeInsets.fromLTRB(4, 8, 4, 8),
+                                     // Set the desired width here
+                                     child: ListTile(
+                                       title: Text(snapshot.child('title').value.toString()),
+                                       subtitle: Text(snapshot.child('content').value.toString()),
+                                     ),
+                                   ),
+                                 );
+                               }).toList(),
+                             );
+                          },
                         ),
                       ),
                       Container(
@@ -143,7 +161,7 @@ class HomeScreen extends StatelessWidget {
                                   XCards(
                                       onPress: () {
                                         debugPrint('Chats');
-                                        showToast("${user!.uid} ${_auth.currentUser!.email}");
+                                        // showToast("${user!.uid} ${_auth.currentUser!.email}");
 
                                         // Navigator.push(context, CupertinoPageRoute(builder: (context) => const ChatScreen()));
                                       },
@@ -157,6 +175,8 @@ class HomeScreen extends StatelessWidget {
                                   XCards(
                                       onPress: () {
                                         debugPrint('Datesheet');
+                                        fetchNoticeData();
+                                        print(notices);
                                       },
                                       icon: 'assets/icons/datesheet.svg',
                                       xtext: 'Datesheet'),
@@ -181,12 +201,6 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class Notice {
-  final String title;
-  final String content;
-
-  Notice({required this.title, required this.content});
-}
 
 class XCards extends StatelessWidget {
   const XCards(

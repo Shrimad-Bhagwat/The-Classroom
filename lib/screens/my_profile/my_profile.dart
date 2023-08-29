@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:the_classroom/components/notices.dart';
 import 'package:the_classroom/components/toast.dart';
 import 'package:the_classroom/constants.dart';
 import 'package:the_classroom/screens/login_screen/login_screen.dart';
@@ -26,16 +27,16 @@ String? customUID = myemail.split("@")[0];
 
 void storeData() {
   if (_currentUser != null) {
-    showToast(customUID.toString());
+    // showToast(customUID.toString());
     // String assignmentId = DateTime.now().microsecondsSinceEpoch.toString();
     String resultId = DateTime.now().microsecondsSinceEpoch.toString();
     databaseReference.child('users/${_currentUser!.uid}_$customUID/result/$resultId').set({
       // == Result ==
       'id' : DateTime.now().microsecondsSinceEpoch.toString(),
-      'subjectName' : 'Physics',
-      'grade' : 'D',
-      'totalMarks' : '100' ,
-      'obtainedMarks' : '61',
+      'subjectName' : 'Maths',
+      'grade' : 'B',
+      'totalMarks' : 100 ,
+      'obtainedMarks' : 85,
 
 
       // == Assignment ==
@@ -140,7 +141,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       if (snapshot.exists) {
         setState(() {
           nameText = snapshot.child('name').value.toString();
-          print("User name $nameText");
+          // print("User name $nameText");
           _currentUser?.updateDisplayName(nameText);
           classText = snapshot.child('class').value.toString();
           rollNoText = snapshot.child('roll_no').value.toString();
@@ -188,6 +189,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   Navigator.pop(context);
                   showToastSuccess('Logout Success!');
                   // storeData();
+                  // storeNoticeData();
                 },
               )
             ],
