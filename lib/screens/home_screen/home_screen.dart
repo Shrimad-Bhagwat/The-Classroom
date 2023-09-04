@@ -18,7 +18,6 @@ import '../../components/theme.dart';
 import '../../constants.dart';
 import 'package:the_classroom/components/toast.dart';
 
-
 final FirebaseAuth _auth = FirebaseAuth.instance;
 User? user = _auth.currentUser;
 
@@ -31,16 +30,16 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final ref = FirebaseDatabase.instance
-      .ref('notices');
+  final ref = FirebaseDatabase.instance.ref('notices');
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     // storeNoticeData();
     fetchNoticeData();
-
   }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -75,10 +74,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             // go to profile details screen
                             print('Profile clicked');
 
-
                             // showToast(user!.email.toString());
-                            Navigator.push(context, CupertinoPageRoute(builder: (context) => const MyProfileScreen(),),);
-
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                builder: (context) => const MyProfileScreen(),
+                              ),
+                            );
                           }),
                     ],
                   )
@@ -116,29 +118,36 @@ class _HomeScreenState extends State<HomeScreen> {
                         height: 160,
                         child: FirebaseAnimatedList(
                           scrollDirection: Axis.horizontal,
-                          // Set the desired scroll direction here
                           query: ref,
                           itemBuilder: (context, snapshot, animation, index) {
-                             return Row(
-                               children: notices.map((notice) {
-                                 return Card(
-                                   color: kSecondaryColor,
-                                   margin: const EdgeInsets.all(16.0),
-                                   child: Container(
-                                     width:
-                                     MediaQuery.of(context).size.width / 2.6,
-                                     height: 200,
-                                     padding:
-                                     const EdgeInsets.fromLTRB(4, 8, 4, 8),
-                                     // Set the desired width here
-                                     child: ListTile(
-                                       title: Text(snapshot.child('title').value.toString()),
-                                       subtitle: Text(snapshot.child('content').value.toString()),
-                                     ),
-                                   ),
-                                 );
-                               }).toList(),
-                             );
+                            Set<String> uniqueKeys = Set();
+                            return Row(
+                              children: notices.where((notice) {
+                                String key = snapshot.key.toString();
+                                bool isUnique = uniqueKeys.add(key);
+                                return isUnique;
+                              }).map((notice) {
+                                return Card(
+                                  color: kSecondaryColor,
+                                  margin: const EdgeInsets.all(16.0),
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width / 2.6,
+                                    height: 200,
+                                    padding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
+                                    child: ListTile(
+                                      title: Text(snapshot
+                                          .child('title')
+                                          .value
+                                          .toString()),
+                                      subtitle: Text(snapshot
+                                          .child('content')
+                                          .value
+                                          .toString()),
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            );
                           },
                         ),
                       ),
@@ -153,8 +162,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                   XCards(
                                       onPress: () {
                                         debugPrint('Assignment');
-                                        Navigator.push(context, CupertinoPageRoute(builder: (context) => const AssignmentScreen(),),);
-
+                                        Navigator.push(
+                                          context,
+                                          CupertinoPageRoute(
+                                            builder: (context) =>
+                                                const AssignmentScreen(),
+                                          ),
+                                        );
                                       },
                                       icon: 'assets/icons/assignment.svg',
                                       xtext: 'Assignment'),
@@ -183,7 +197,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                   XCards(
                                       onPress: () {
                                         debugPrint('Result');
-                                        Navigator.push(context, CupertinoPageRoute(builder: (context) => const ResultScreen(),),);
+                                        Navigator.push(
+                                          context,
+                                          CupertinoPageRoute(
+                                            builder: (context) =>
+                                                const ResultScreen(),
+                                          ),
+                                        );
                                       },
                                       icon: 'assets/icons/result.svg',
                                       xtext: 'Result'),
@@ -200,7 +220,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ));
   }
 }
-
 
 class XCards extends StatelessWidget {
   const XCards(
