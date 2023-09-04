@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:the_classroom/screens/assignment_screen/assignment_screen.dart';
+import 'package:the_classroom/screens/datesheet_screen/datesheet_screen.dart';
 import 'package:the_classroom/screens/home_screen/widgets/student_data.dart';
 import 'package:the_classroom/screens/my_profile/my_profile.dart';
 import 'package:the_classroom/screens/result_screen/result_screen.dart';
@@ -95,8 +96,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 decoration: const BoxDecoration(
                   color: kOtherColor,
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(kDefaultPadding * 3),
-                    topRight: Radius.circular(kDefaultPadding * 3),
+                    topLeft: Radius.circular(kDefaultPadding * 2),
+                    topRight: Radius.circular(kDefaultPadding * 2),
                   ),
                 ),
                 child: Column(children: [
@@ -189,8 +190,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                   XCards(
                                       onPress: () {
                                         debugPrint('Datesheet');
-                                        fetchNoticeData();
-                                        print(notices);
+                                        Navigator.push(
+                                          context,
+                                          CupertinoPageRoute(
+                                            builder: (context) =>
+                                            const DateSheetScreen(),
+                                          ),
+                                        );
                                       },
                                       icon: 'assets/icons/datesheet.svg',
                                       xtext: 'Datesheet'),

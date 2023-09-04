@@ -29,14 +29,24 @@ void storeData() {
   if (_currentUser != null) {
     // showToast(customUID.toString());
     // String assignmentId = DateTime.now().microsecondsSinceEpoch.toString();
-    String resultId = DateTime.now().microsecondsSinceEpoch.toString();
-    databaseReference.child('users/${_currentUser!.uid}_$customUID/result/$resultId').set({
+    String datesheetId = DateTime.now().microsecondsSinceEpoch.toString();
+    databaseReference.child('datesheet/$datesheetId').set({
+    // databaseReference.child('users/${_currentUser!.uid}_$customUID/result/$resultId').set({
+      // == DateSheet ==
+      // 'id' :  DateTime.now().microsecondsSinceEpoch.toString(),
+      // 'date' : 26,
+      // 'monthName' : 'Sep',
+      // 'subjectName' : 'Biology',
+      // 'dayName' : 'Tuesday',
+      // 'time' : '10:15 am'
+
+
       // == Result ==
-      'id' : DateTime.now().microsecondsSinceEpoch.toString(),
-      'subjectName' : 'Maths',
-      'grade' : 'B',
-      'totalMarks' : 100 ,
-      'obtainedMarks' : 85,
+      // 'id' : DateTime.now().microsecondsSinceEpoch.toString(),
+      // 'subjectName' : 'Maths',
+      // 'grade' : 'B',
+      // 'totalMarks' : 100 ,
+      // 'obtainedMarks' : 85,
 
 
       // == Assignment ==
