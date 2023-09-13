@@ -27,7 +27,7 @@ class StudentName extends StatelessWidget {
         ),
         Text(
           // "User",
-          user!.email!.split('@')[0].toString(), // get myName from database
+          user!.displayName.toString(), // get myName from database
           style: Theme.of(context)
               .textTheme
               .titleMedium!

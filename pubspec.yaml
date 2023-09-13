@@ -52,6 +52,7 @@ dependencies:
   simple_snackbar: ^1.0.2
   snackbar: any
   fluttertoast: ^8.1.2
+  firebase_storage: ^11.2.1
 
 
 dev_dependencies:

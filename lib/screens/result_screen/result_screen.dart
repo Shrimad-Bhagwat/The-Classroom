@@ -124,8 +124,8 @@ class _ResultScreenState extends State<ResultScreen> {
                   ),
             ),
             Text(
-              // _currentUser!.displayName.toString(),
-              'Your Name',
+              _currentUser!.displayName.toString(),
+              // 'Your Name',
               style: Theme.of(context)
                   .textTheme
                   .titleLarge!

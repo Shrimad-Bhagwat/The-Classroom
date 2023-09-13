@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:the_classroom/screens/assignment_screen/assignment_screen.dart';
+import 'package:the_classroom/screens/chat_screen/rooms.dart';
 import 'package:the_classroom/screens/datesheet_screen/datesheet_screen.dart';
 import 'package:the_classroom/screens/home_screen/widgets/student_data.dart';
 import 'package:the_classroom/screens/my_profile/my_profile.dart';
@@ -18,6 +19,8 @@ import '../../components/notices.dart';
 import '../../components/theme.dart';
 import '../../constants.dart';
 import 'package:the_classroom/components/toast.dart';
+
+import '../chat_screen/chat_screen.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 User? user = _auth.currentUser;
@@ -178,7 +181,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                         debugPrint('Chats');
                                         // showToast("${user!.uid} ${_auth.currentUser!.email}");
 
-                                        // Navigator.push(context, CupertinoPageRoute(builder: (context) => const ChatScreen()));
+                                        Navigator.push(
+                                            context,
+                                            CupertinoPageRoute(
+                                                builder: (context) => const RoomsPage()));
                                       },
                                       icon: 'assets/icons/chat.svg',
                                       xtext: 'Chats'),
