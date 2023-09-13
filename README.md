@@ -2,21 +2,20 @@
 > An app that connects students and teachers on a single platform, combining features
 from different apps into one easy-to-use interface
 
-![Android Studio](https://img.shields.io/badge/Android%20Studio-3DDC84.svg?style=for-the-badge&logo=android-studio&logoColor=white) ![Firebase](https://img.shields.io/badge/firebase-%23039BE5.svg?style=for-the-badge&logo=firebase)
-[Flutter](https://img.shields.io/badge/firebase-%23039BE5.svg?style=for-the-badge&logo=flutter)
+![Android Studio](https://img.shields.io/badge/Android%20Studio-3DDC84.svg?style=for-the-badge&logo=android-studio&logoColor=white) ![Firebase](https://img.shields.io/badge/firebase-%23039BE5.svg?style=for-the-badge&logo=firebase) ![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)
 
-### Download the app now  :  [VIT RideShare APK](https://github.com/Shrimad-Bhagwat/VIT-RideShare/releases/download/v1.0.0/vit-rideshare-v1.0.0.apk)
+### Download the app now  :  [The Classroom APK](https://github.com/Shrimad-Bhagwat/The-Classroom)
 
-The Cab Sharing Application for the students of VIT Bhopal is a mobile app that enables students to find travel partners and share rides, reducing transportation costs and promoting sustainable transportation.
+The Classroom is a mobile application developed using Flutter and Firebase. It serves as a platform connecting students and teachers, offering a streamlined interface with features from various educational apps.
 
-The application is designed with a simple and user-friendly interface that enables students to easily navigate through the app's features. The app allows students to search for rides or offer rides to other students who are going in the same direction.
+The application is designed with a simple and user-friendly interface that enables students to easily navigate through the app's features. 
 
-![](./images/vit-rideshare-mockup-1.png)
+![](./images/THE_CLASSROOM_MOCKUP.png)
 
 ## Usage example
 
-VIT RideShare app can be used by students as well as professors to share a ride with someone going to the same place.
-
+This app can be used by students and professors to communicate properly and simplify all the tasks.
+<!-- 
 ## Development setup
 
 Requirements 
@@ -38,4 +37,4 @@ git clone https://github.com/<YOUR PROFILE>/VIT-RideShare.git
 3. Commit your changes (`git commit -am 'Add <feature-name>'`)
 4. Push to the branch (`git push origin feature/<feature-name>`)
 5. Create a new Pull Request
-
+ -->
