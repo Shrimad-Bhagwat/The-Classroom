@@ -8,7 +8,7 @@ import 'package:the_classroom/screens/assignment_screen/assignment_screen.dart';
 import 'package:the_classroom/screens/result_screen/components/result_component.dart';
 import 'package:the_classroom/screens/result_screen/data/result_data.dart';
 
-import '../../constants.dart';
+import '../../extras/constants.dart';
 import 'package:collection/collection.dart';
 
 import '../my_profile/my_profile.dart';

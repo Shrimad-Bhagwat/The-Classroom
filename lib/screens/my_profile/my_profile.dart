@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:the_classroom/components/notices.dart';
 import 'package:the_classroom/components/toast.dart';
-import 'package:the_classroom/constants.dart';
+import 'package:the_classroom/extras/constants.dart';
 import 'package:the_classroom/screens/login_screen/login_screen.dart';
 import 'package:the_classroom/screens/my_profile/data/profile_data.dart';
 
@@ -29,9 +29,10 @@ void storeData() {
   if (_currentUser != null) {
     // showToast(customUID.toString());
     // String assignmentId = DateTime.now().microsecondsSinceEpoch.toString();
-    String datesheetId = DateTime.now().microsecondsSinceEpoch.toString();
-    databaseReference.child('datesheet/$datesheetId').set({
-    // databaseReference.child('users/${_currentUser!.uid}_$customUID/result/$resultId').set({
+    // String datesheetId = DateTime.now().microsecondsSinceEpoch.toString();
+
+    // databaseReference.child('datesheet/$datesheetId').set({
+    databaseReference.child('users/${_currentUser!.uid}_$customUID/data').set({
       // == DateSheet ==
       // 'id' :  DateTime.now().microsecondsSinceEpoch.toString(),
       // 'date' : 26,
@@ -58,19 +59,19 @@ void storeData() {
       // 'status' : 'Pending',
 
       // == User ==
-      // 'id': DateTime.now().microsecondsSinceEpoch.toString(),
-      // 'email': _currentUser!.email.toString(),
-      // 'name': '',
-      // 'class': '',
-      // 'roll_no': '',
-      // 'reg_no': '',
-      // 'acad_year': '',
-      // 'degree': '',
-      // 'course': '',
-      // 'specialization': '',
-      // 'dob': '',
-      // 'father_name': '',
-      // 'phone': '',
+      'id': DateTime.now().microsecondsSinceEpoch.toString(),
+      'email': _currentUser!.email.toString(),
+      'name': 'Test',
+      'class': 'XII-C',
+      'roll_no': '25',
+      'reg_no': '20BCE10001',
+      'acad_year': '2023-24',
+      'degree': 'B.TECH',
+      'course': 'CS',
+      'specialization': 'CORE',
+      'dob': '04-05-2004',
+      'father_name': 'XYZ',
+      'phone': '7788996654',
 
     });
   }
@@ -233,6 +234,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       backgroundColor: kSecondaryColor,
                       backgroundImage:
                           AssetImage('assets/images/student_profile.jpg'),
+
                     ),
                     kWidthSizedBox,
                     Column(

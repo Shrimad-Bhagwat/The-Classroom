@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:the_classroom/constants.dart';
+import 'package:the_classroom/extras/constants.dart';
 
 // Toast Messages
 void showToastError(String message) => Fluttertoast.showToast(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../constants.dart';
+import '../extras/constants.dart';
 
 // Your color constants (kPrimaryColor, kTextWhiteColor, etc.) should be defined here
 //colors
@@ -14,7 +14,7 @@ ThemeData getAppTheme(BuildContext context) {
       elevation: 0,
 
     ),
-    textTheme: GoogleFonts.sourceSansProTextTheme(
+    textTheme: GoogleFonts.sourceSans3TextTheme(
       Theme.of(context).textTheme.apply().copyWith(
         bodyLarge: const TextStyle(
           color: kTextWhiteColor,

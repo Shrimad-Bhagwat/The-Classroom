@@ -15,7 +15,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../components/theme.dart';
-import '../../constants.dart';
+import '../../extras/constants.dart';
 
 
 class ChatScreen extends StatefulWidget {

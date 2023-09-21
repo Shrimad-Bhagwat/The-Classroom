@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:the_classroom/screens/assignment_screen/assignment_screen.dart';
+import 'package:the_classroom/screens/chat_app/chat_page.dart';
 import 'package:the_classroom/screens/chat_screen/rooms.dart';
 import 'package:the_classroom/screens/datesheet_screen/datesheet_screen.dart';
 import 'package:the_classroom/screens/home_screen/widgets/student_data.dart';
@@ -17,7 +18,7 @@ import 'package:the_classroom/screens/result_screen/result_screen.dart';
 
 import '../../components/notices.dart';
 import '../../components/theme.dart';
-import '../../constants.dart';
+import '../../extras/constants.dart';
 import 'package:the_classroom/components/toast.dart';
 
 import '../chat_screen/chat_screen.dart';
@@ -184,7 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         Navigator.push(
                                             context,
                                             CupertinoPageRoute(
-                                                builder: (context) => const RoomsPage()));
+                                                builder: (context) => ChatPage()));
                                       },
                                       icon: 'assets/icons/chat.svg',
                                       xtext: 'Chats'),

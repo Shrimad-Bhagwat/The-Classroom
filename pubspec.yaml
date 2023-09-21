@@ -36,7 +36,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
 
   cupertino_icons: ^1.0.2
-  google_fonts: ^5.1.0
+  google_fonts: ^6.0.0
   flutter_svg: ^2.0.7
   flutter_chat_ui: ^1.6.6
   flutter_firebase_chat_core: ^1.6.4
@@ -45,7 +45,7 @@ dependencies:
   image_picker: ^1.0.1
   mime: ^1.0.4
   open_filex: ^4.3.2
-  uuid: ^3.0.7
+  uuid: ^4.0.0
   firebase_database: ^10.2.5
   firebase_core: ^2.15.0
   firebase_auth: ^4.2.6
@@ -53,7 +53,7 @@ dependencies:
   snackbar: any
   fluttertoast: ^8.1.2
   firebase_storage: ^11.2.1
-
+  cloud_firestore: ^4.9.2
 
 dev_dependencies:
   flutter_test:

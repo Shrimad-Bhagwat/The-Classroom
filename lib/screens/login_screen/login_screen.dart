@@ -1,17 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:simple_snackbar/simple_snackbar.dart';
 import 'package:the_classroom/components/theme.dart';
-import 'package:the_classroom/constants.dart';
+import 'package:the_classroom/extras/constants.dart';
 import 'package:the_classroom/screens/home_screen/home_screen.dart';
-
-import '../../auth.dart';
+import '../../extras/auth.dart';
 import '../../components/custom_buttons.dart';
 import '../../components/toast.dart';
 
+
 late bool _passwordVisible;
+final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -63,6 +65,8 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
   final TextEditingController _passwordController = TextEditingController();
 
   // Firebase Auth
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   //    Registration
   Future<void> createUser() async {
     if (!_formKey.currentState!.validate()) return;
@@ -75,6 +79,14 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
         email: email,
         password: password,
       );
+      try {
+        await _firestore.collection('users').doc(_auth.currentUser?.uid).set({
+          "email": email,
+          "status": "Unavailable",
+        });
+        // showToastSuccess('Done');
+      } catch(e){debugPrint(e.toString());showToastError(e.toString());}
+
       showToastSuccess('Registration Success!');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -85,7 +97,9 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
     } catch (e) {
       showToastError('An Error occurred $e');
     }
-    setState(() => _loading = false);
+    if (this.mounted) {
+      setState(() => _loading = false);
+    }
   }
 
   //    Login
@@ -99,6 +113,13 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
         email: email,
         password: password,
       );
+      // try {
+      //   await _firestore.collection('users').doc(_auth.currentUser?.uid).set({
+      //     "email": email,
+      //     "status": "Unavailable",
+      //   });
+      //   // showToastSuccess('Done');
+      // } catch(e){debugPrint(e.toString());showToastError(e.toString());}
       showToastSuccess('Login Success!');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -137,6 +158,7 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
       home: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: Scaffold(
+          key: _scaffoldKey,
           body: ListView(
             children: [
               Container(

@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:the_classroom/constants.dart';
+import 'package:the_classroom/extras/constants.dart';
 import 'package:the_classroom/routes.dart';
 import 'package:the_classroom/screens/splash_screen/splash_screen.dart';
 
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
             color: kPrimaryColor,
           elevation: 0
         ),
-        textTheme: GoogleFonts.sourceSansProTextTheme(
+        textTheme: GoogleFonts.sourceSans3TextTheme(
           Theme.of(context).textTheme.apply().copyWith(
             bodyLarge: const TextStyle(
                 color: kTextWhiteColor,

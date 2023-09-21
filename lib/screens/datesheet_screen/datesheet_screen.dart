@@ -6,7 +6,7 @@ import 'package:the_classroom/screens/datesheet_screen/datesheet_data/datesheet_
 
 import '../../components/notices.dart';
 import '../../components/theme.dart';
-import '../../constants.dart';
+import '../../extras/constants.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final _currentUser = _auth.currentUser;

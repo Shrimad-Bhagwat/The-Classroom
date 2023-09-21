@@ -4,7 +4,7 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:the_classroom/components/theme.dart';
 import 'package:the_classroom/components/toast.dart';
-import 'package:the_classroom/constants.dart';
+import 'package:the_classroom/extras/constants.dart';
 import 'package:the_classroom/screens/assignment_screen/data/assignment_data.dart';
 
 import '../my_profile/my_profile.dart';
