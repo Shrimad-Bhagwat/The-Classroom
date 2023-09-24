@@ -19,8 +19,16 @@ import '../../components/notices.dart';
 import '../../components/theme.dart';
 import '../../extras/constants.dart';
 import 'package:the_classroom/components/toast.dart';
+
+import '../login_screen/registration_screen.dart';
 final FirebaseAuth _auth = FirebaseAuth.instance;
 User? user = _auth.currentUser;
+final DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
+String? degree=" ", course=" ", acadYear=" ";
+
+// Custom UID
+String myemail = user!.email.toString();
+String? customUID = myemail.split("@")[0];
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -33,12 +41,36 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final ref = FirebaseDatabase.instance.ref('notices');
 
+  String? degree=" ", course=" ", acadYear=" ";
+
+
+  Future<void> updateText() async {
+    DatabaseReference ref = FirebaseDatabase.instance.ref();
+
+    if (user != null) {
+      final snapshot =
+          await ref.child('users/${user!.uid}_$customUID/data').get();
+      if (snapshot.exists) {
+        setState(() {
+        acadYear = snapshot.child('acad_year').value.toString();
+        degree = snapshot.child('degree').value.toString();
+        course = snapshot.child('course').value.toString();
+        });
+        print('$acadYear $degree  $course');
+      } else {
+        showToastError('Data Not Found!');
+      }
+    } else {
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     // storeNoticeData();
     fetchNoticeData();
+    updateText();
   }
 
   @override
@@ -57,16 +89,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      const Column(
+                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           kHalfSizedBox,
                           StudentName(),
                           kHalfSizedBox,
                           StudentClass(
-                              studentClass: 'VIT BHOPAL | B.TECH. CSE'),
+                              studentClass: 'VIT BHOPAL | $degree $course'),
                           kHalfSizedBox,
-                          StudentYear(studentYear: '2020-2024'),
+                          StudentYear(studentYear: "$acadYear"),
                         ],
                       ),
                       StudentProfile(

@@ -18,6 +18,8 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 final _currentUser = _auth.currentUser;
 final DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
 
+
+
 // Custom UID
 String myemail = _currentUser!.email.toString();
 
@@ -158,8 +160,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           rollNoText = snapshot.child('roll_no').value.toString();
           regNoText = snapshot.child('reg_no').value.toString();
           acadYearText = snapshot.child('acad_year').value.toString();
+
           degreeText = snapshot.child('degree').value.toString();
+
           courseText = snapshot.child('course').value.toString();
+
           specializationText =
               snapshot.child('specialization').value.toString();
           dobText = snapshot.child('dob').value.toString();

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,6 +8,7 @@ import 'package:simple_snackbar/simple_snackbar.dart';
 import 'package:the_classroom/components/theme.dart';
 import 'package:the_classroom/extras/constants.dart';
 import 'package:the_classroom/screens/home_screen/home_screen.dart';
+import 'package:the_classroom/screens/login_screen/registration_screen.dart';
 import '../../extras/auth.dart';
 import '../../components/custom_buttons.dart';
 import '../../components/toast.dart';
@@ -69,37 +71,43 @@ class _LoginScreenPageState extends State<LoginScreenPage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   //    Registration
   Future<void> createUser() async {
-    if (!_formKey.currentState!.validate()) return;
-    final email = _emailController.value.text;
-    final password = _passwordController.value.text;
-    setState(() => _loading = true);
-    try {
-      final credential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      try {
-        await _firestore.collection('users').doc(_auth.currentUser?.uid).set({
-          "email": email,
-          "status": "Unavailable",
-        });
-        // showToastSuccess('Done');
-      } catch(e){debugPrint(e.toString());showToastError(e.toString());}
-
-      showToastSuccess('Registration Success!');
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        showToastError('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        showToastError('The account already exists for that email.');
-      }
-    } catch (e) {
-      showToastError('An Error occurred $e');
-    }
-    if (this.mounted) {
-      setState(() => _loading = false);
-    }
+    // if (!_formKey.currentState!.validate()) return;
+    // final email = _emailController.value.text;
+    // final password = _passwordController.value.text;
+    // setState(() => _loading = true);
+    // try {
+    //   final credential =
+    //       await FirebaseAuth.instance.createUserWithEmailAndPassword(
+    //     email: email,
+    //     password: password,
+    //   );
+    //   // try {
+    //   await _firestore.collection('users').doc(_auth.currentUser?.uid).set({
+    //     "email": email,
+    //     "status": "Unavailable",
+    //   });
+    //   //   // showToastSuccess('Done');
+    //   // } catch(e){debugPrint(e.toString());showToastError(e.toString());}
+    //
+    //   showToastSuccess('Registration Success!');
+    // } on FirebaseAuthException catch (e) {
+    //   if (e.code == 'weak-password') {
+    //     showToastError('The password provided is too weak.');
+    //   } else if (e.code == 'email-already-in-use') {
+    //     showToastError('The account already exists for that email.');
+    //   }
+    // } catch (e) {
+    //   showToastError('An Error occurred $e');
+    // }
+    // if (this.mounted) {
+    //   setState(() => _loading = false);
+    // }
+    Navigator.push(
+      context,
+      CupertinoPageRoute(
+        builder: (context) => const RegistrationScreen(),
+      ),
+    );
   }
 
   //    Login

@@ -1,16 +1,54 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
+import '../../../components/toast.dart';
 import '../../../extras/constants.dart';
 import '../../my_profile/my_profile.dart';
 import '../home_screen.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
-User? _currentUser;
+User? _currentUser=_auth.currentUser;
+// Custom UID
+String myemail = _currentUser!.email.toString();
+String? customUID = myemail.split("@")[0];
 
-class StudentName extends StatelessWidget {
+class StudentName extends StatefulWidget {
   const StudentName({super.key});
 
+  @override
+  State<StudentName> createState() => _StudentNameState();
+}
+
+class _StudentNameState extends State<StudentName> {
+
+  String? displayName="";
+
+
+  Future<void> updateText() async {
+    DatabaseReference ref = FirebaseDatabase.instance.ref();
+
+    if (user != null) {
+      final snapshot =
+      await ref.child('users/${user!.uid}_$customUID/data').get();
+      if (snapshot.exists) {
+        setState(() {
+          displayName = snapshot.child('name').value.toString();
+        });
+        print('$acadYear $degree  $course');
+      } else {
+        showToastError('Data Not Found!');
+      }
+    } else {
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    updateText();
+  }
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -27,7 +65,8 @@ class StudentName extends StatelessWidget {
         ),
         Text(
           // "User",
-          user!.displayName.toString(), // get myName from database
+          displayName.toString(),
+          // user!.displayName.toString(), // get myName from database
           style: Theme.of(context)
               .textTheme
               .titleMedium!
