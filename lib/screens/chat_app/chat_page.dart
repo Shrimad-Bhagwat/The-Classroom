@@ -85,31 +85,6 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
     });
   }
 
-  // void onSearch() async {
-  //   FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  //
-  //   setState(() {
-  //     isLoading = true;
-  //   });
-  //   print(_search.text.toString());
-  //   await _firestore
-  //       .collection('users')
-  //       .where("email", isEqualTo: _search.text)
-  //       .get()
-  //       .then((value) {
-  //     setState(() {
-  //       userMap = value.docs[0].data();
-  //       isLoading = false;
-  //     });
-  //     print(userMap);
-  //
-  //   });
-  //   setState(() {
-  //     showToast('No User found!');
-  //     isLoading = false;
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -197,14 +172,12 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
               ),
               userMap != null
                   ? Container(
-                      margin: EdgeInsets.symmetric(horizontal: kDefaultPadding),
-                      decoration: BoxDecoration(
+                      margin: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                      decoration: const BoxDecoration(
                           color: kPrimaryColor,
                           borderRadius: BorderRadius.all(
                               Radius.circular(kDefaultPadding / 2))),
                       child: ListTile(
-                        // onTap: () => Navigator.of(context).push(
-                        //     MaterialPageRoute(builder: (_) => ChatRoom())),
                         onTap: () {
                         String roomId = chatRoomId(
                             _auth.currentUser!.email!,
@@ -219,7 +192,7 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
                           ),
                         );
                         },
-                        leading: Icon(Icons.account_box, color: Colors.white),
+                        leading: const Icon(Icons.account_box, color: Colors.white),
                         title: Text(
                           userMap!['email'],
                           style: const TextStyle(
