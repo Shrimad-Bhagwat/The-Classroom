@@ -27,26 +27,26 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance!.addObserver(this);
-    // setStatus("Online");
+    setStatus("Online");
     // onSearch();
   }
 
-  // void setStatus(String status) async {
-  //   await _firestore.collection('users').doc(_auth.currentUser!.uid).update({
-  //     "status": status,
-  //   });
-  // }
+  void setStatus(String status) async {
+    await _firestore.collection('users').doc(_auth.currentUser!.uid).update({
+      "status": status,
+    });
+  }
 
-  // @override
-  // void didChangeAppLifecycleState(AppLifecycleState state) {
-  //   if (state == AppLifecycleState.resumed) {
-  //     // online
-  //     setStatus("Online");
-  //   } else {
-  //     // offline
-  //     setStatus("Offline");
-  //   }
-  // }
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // online
+      setStatus("Online");
+    } else {
+      // offline
+      setStatus("Offline");
+    }
+  }
 
   String chatRoomId(String user1, String user2) {
     if (user1[0].toLowerCase().codeUnits[0] >

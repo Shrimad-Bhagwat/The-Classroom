@@ -5,11 +5,13 @@ import 'package:the_classroom/components/toast.dart';
 import 'package:the_classroom/extras/constants.dart';
 
 import '../../components/theme.dart';
+import '../assignment_screen/assignment_screen.dart';
 
 class ChatRoom extends StatelessWidget {
   final Map<String, dynamic> userMap;
   final String chatRoomId;
   final FocusNode _messageFocusNode = FocusNode();
+
   ChatRoom({required this.chatRoomId, required this.userMap});
 
   final TextEditingController _message = TextEditingController();
@@ -54,67 +56,122 @@ class ChatRoom extends StatelessWidget {
             },
             child: const Icon(Icons.arrow_back_ios_new_outlined),
           ),
-          title: Text(userMap['email']),
+          // title: Text(userMap['email']),
+          title: StreamBuilder<DocumentSnapshot>(
+            stream: _firestore.collection("users").doc(userMap['uid']).snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData && snapshot.data != null) {
+                return Container(
+                color: kPrimaryColor,
+                child: Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(userMap['name']),
+                        Row(
+                          children: [
+                            Container(
+                              width: 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                color: snapshot.data!['status'] == 'Online' ? Colors.green : Colors.transparent,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            SizedBox(width: 8), // Add some spacing between dot and status text
+                            Text(
+                              snapshot.data!['status'],
+                              style: TextStyle(fontSize: 12),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+              } else {
+                return Container();
+              }
+            },
+          ),
         ),
-        body: SingleChildScrollView(
+        body: Container(
+          color: Colors.white,
           child: Column(
             children: [
-              Container(
-                height: size.height / 1.25,
-                width: size.width,
-                child: StreamBuilder<QuerySnapshot>(
-                  stream: _firestore
-                      .collection('chatroom')
-                      .doc(chatRoomId)
-                      .collection('chats')
-                      .orderBy("time", descending: false)
-                      .snapshots(),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if (snapshot.data != null) {
-                      return ListView.builder(
-                          itemCount: snapshot.data?.docs.length,
-                          itemBuilder: (context, index) {
-                            var data = snapshot.data?.docs[index].data();
-                            print(data);
-                            Map<String, dynamic> map = data as Map<String, dynamic>;
-                            return messages(size, map);
-                          });
-                    } else {
-                      return Container();
-                    }
-                  },
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Container(
+                        height: size.height / 1.25,
+                        width: size.width,
+                        child: StreamBuilder<QuerySnapshot>(
+                          stream: _firestore
+                              .collection('chatroom')
+                              .doc(chatRoomId)
+                              .collection('chats')
+                              .orderBy("time", descending: false)
+                              .snapshots(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<QuerySnapshot> snapshot) {
+                            if (snapshot.data != null) {
+                              return ListView.builder(
+                                  itemCount: snapshot.data?.docs.length,
+                                  itemBuilder: (context, index) {
+                                    var data =
+                                        snapshot.data?.docs[index].data();
+                                    print(data);
+                                    Map<String, dynamic> map =
+                                        data as Map<String, dynamic>;
+                                    return messages(size, map);
+                                  });
+                            } else {
+                              return const LoadingMessages();
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               Container(
-                decoration: const BoxDecoration(
-                    color: kTextWhiteColor,
-                    borderRadius:
-                        BorderRadius.all(Radius.circular(kDefaultPadding / 2))),
-                height: size.height / 10,
+                // decoration: const BoxDecoration(
+                //     color: kPrimaryColor,
+                // ),
+                height: size.height / 16,
                 width: size.width,
                 alignment: Alignment.center,
+
+                // User Input
                 child: Container(
                   height: size.height / 12,
                   width: size.width / 1.1,
                   child: Row(
                     children: [
                       Container(
-                        height: size.height / 12,
+                        height: size.height / 16,
                         width: size.width / 1.3,
+                        decoration: BoxDecoration(
+                          border:
+                              Border.all(color: kTextLightColor, width: 1.5),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
                         child: TextField(
                           controller: _message,
                           focusNode: _messageFocusNode,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.circular(kDefaultPadding / 2),
-                            ),
+                          decoration: const InputDecoration(
+                            prefix: kHalfWidthSizedBox,
                           ),
                         ),
                       ),
                       IconButton(
-                          onPressed:(){ onSendMessage(context);},
+                          onPressed: () {
+                            onSendMessage(context);
+                          },
                           icon: const Icon(
                             Icons.send,
                             color: kTextBlackColor,
@@ -122,7 +179,8 @@ class ChatRoom extends StatelessWidget {
                     ],
                   ),
                 ),
-              )
+              ),
+              kHalfSizedBox
             ],
           ),
         ),
@@ -138,14 +196,69 @@ class ChatRoom extends StatelessWidget {
           ? Alignment.centerRight
           : Alignment.centerLeft,
       child: Container(
-          margin: EdgeInsets.all(kDefaultPadding/3),
-          padding: EdgeInsets.symmetric(vertical: kDefaultPadding/5, horizontal: kDefaultPadding/1.5),
+          margin: const EdgeInsets.all(kDefaultPadding / 3),
+          padding: const EdgeInsets.symmetric(
+              vertical: kDefaultPadding / 5, horizontal: kDefaultPadding / 1.5),
           decoration: BoxDecoration(
-            color:map['sendby'] == currUser? Colors.white: kSecondaryColor,
-            borderRadius: BorderRadius.circular(kDefaultPadding/1.5)
-          ),
-          child: Text(map['message'],style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),)
-      ),
+              color: map['sendby'] == currUser
+                  ? kSecondaryColor
+                  : Color.fromARGB(100, 168, 168, 168),
+              borderRadius: BorderRadius.circular(kDefaultPadding / 1.5)),
+          child: Text(
+            map['message'],
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          )),
+    );
+  }
+}
+
+class LoadingMessages extends StatelessWidget {
+  const LoadingMessages({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        kHalfSizedBox,
+        LoadMessage(
+          height: kDefaultPadding * 1.5,
+          width: kDefaultPadding * 3,
+        ),
+        kHalfSizedBox,
+        LoadMessage(
+          height: kDefaultPadding * 1.5,
+          width: kDefaultPadding * 6,
+        ),
+        kHalfSizedBox,
+        LoadMessage(
+          height: kDefaultPadding * 1.5,
+          width: kDefaultPadding * 4,
+        ),
+      ],
+    );
+  }
+}
+
+class LoadMessage extends StatelessWidget {
+  const LoadMessage({
+    super.key,
+    this.height,
+    this.width,
+  });
+
+  final double? height, width;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: height,
+      width: width,
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.3),
+          borderRadius:
+              const BorderRadius.all(Radius.circular(kDefaultPadding))),
     );
   }
 }
