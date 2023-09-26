@@ -27,10 +27,11 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance!.addObserver(this);
+    // Set User status Online once app starts
     setStatus("Online");
-    // onSearch();
   }
 
+  // Update Status
   void setStatus(String status) async {
     await _firestore.collection('users').doc(_auth.currentUser!.uid).update({
       "status": status,
@@ -48,6 +49,7 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
     }
   }
 
+  // Create a Char Room Id for two users
   String chatRoomId(String user1, String user2) {
     if (user1[0].toLowerCase().codeUnits[0] >
         user2.toLowerCase().codeUnits[0]) {
@@ -57,6 +59,7 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
     }
   }
 
+  // Search function for users
   void onSearch() async {
     FirebaseFirestore _firestore = FirebaseFirestore.instance;
     FocusScope.of(context).requestFocus(FocusNode());

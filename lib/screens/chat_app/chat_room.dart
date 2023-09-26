@@ -22,8 +22,8 @@ class ChatRoom extends StatelessWidget {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  File? imageFile; // Changed from File to PickedFile
-
+  File? imageFile;
+  // Select image from Gallery
   Future<void> getImage() async {
     ImagePicker _picker = ImagePicker();
 
@@ -35,6 +35,7 @@ class ChatRoom extends StatelessWidget {
     });
   }
 
+  // Upload Image to Firebase
   Future<void> uploadImage() async {
     String fileName = Uuid().v1();
     int status=1;
@@ -62,7 +63,7 @@ class ChatRoom extends StatelessWidget {
             .collection('chats').doc(fileName).delete();
 
         status = 0;
-    }); // Use File constructor
+    });
 
     if(status==1){
       String imageUrl = await uploadTask.ref.getDownloadURL();
@@ -76,10 +77,9 @@ class ChatRoom extends StatelessWidget {
     }else{
       showToastError('Image not found');
     }
-
-
   }
 
+  // Send Message to Firebase
   void onSendMessage(BuildContext context) async {
     FocusScope.of(context).requestFocus(FocusNode());
     if (_message.text.isNotEmpty) {
@@ -105,7 +105,6 @@ class ChatRoom extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: getAppTheme(context),
@@ -118,7 +117,7 @@ class ChatRoom extends StatelessWidget {
             },
             child: const Icon(Icons.arrow_back_ios_new_outlined),
           ),
-          // title: Text(userMap['email']),
+          // User Name and Status
           title: StreamBuilder<DocumentSnapshot>(
             stream:
                 _firestore.collection("users").doc(userMap['uid']).snapshots(),
@@ -145,7 +144,6 @@ class ChatRoom extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(width: 8),
-                              // Add some spacing between dot and status text
                               Text(
                                 snapshot.data!['status'],
                                 style: TextStyle(fontSize: 12),
@@ -163,6 +161,7 @@ class ChatRoom extends StatelessWidget {
             },
           ),
         ),
+        // Text Messages scroll
         body: Container(
           color: Colors.white,
           child: Column(
@@ -189,7 +188,7 @@ class ChatRoom extends StatelessWidget {
                                   itemBuilder: (context, index) {
                                     var data =
                                         snapshot.data?.docs[index].data();
-                                    print(data);
+                                    // print(data);
                                     Map<String, dynamic> map =
                                         data as Map<String, dynamic>;
                                     return messages(size, map, context);
@@ -204,12 +203,11 @@ class ChatRoom extends StatelessWidget {
                   ),
                 ),
               ),
+              // Message Input Box
               Container(
                 height: size.height / 16,
                 width: size.width,
                 alignment: Alignment.center,
-
-                // User Input
                 child: Container(
                   height: size.height / 12,
                   width: size.width / 1.1,
@@ -269,7 +267,7 @@ class ChatRoom extends StatelessWidget {
                 ? Alignment.centerRight
                 : Alignment.centerLeft,
             child: Container(
-                margin: const EdgeInsets.all(kDefaultPadding / 3),
+                margin: const EdgeInsets.symmetric(horizontal: kDefaultPadding / 1.5, vertical: kDefaultPadding/3),
                 padding: const EdgeInsets.symmetric(
                     vertical: kDefaultPadding / 5,
                     horizontal: kDefaultPadding / 1.5),
@@ -296,10 +294,10 @@ class ChatRoom extends StatelessWidget {
                 MaterialPageRoute(builder: (_)=> ShowImage(imageUrl: map['message'], ))
               ),
               child: Container(
-                // decoration: BoxDecoration(
-                //     borderRadius: BorderRadius.circular(kDefaultPadding),
-                //     border: Border.all()
-                // ),
+                decoration: BoxDecoration(
+                    // borderRadius: BorderRadius.circular(kDefaultPadding),
+                    border: Border.all()
+                ),
                 height: size.height / 2.5,
                 width: size.width / 2,
                 alignment: map['message'] != "" ? null : Alignment.center,
