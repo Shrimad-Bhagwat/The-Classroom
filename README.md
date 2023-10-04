@@ -4,7 +4,7 @@ from different apps into one easy-to-use interface
 
 ![Android Studio](https://img.shields.io/badge/Android%20Studio-3DDC84.svg?style=for-the-badge&logo=android-studio&logoColor=white) ![Firebase](https://img.shields.io/badge/firebase-%23039BE5.svg?style=for-the-badge&logo=firebase) ![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)
 
-### Download the app now  :  [The Classroom APK](https://github.com/Shrimad-Bhagwat/The-Classroom)
+### Download the app now  :  [The Classroom APK](https://github.com/Shrimad-Bhagwat/The-Classroom/releases/download/v1.0.0/the_classroom.apk)
 
 The Classroom is a mobile application developed using Flutter and Firebase. It serves as a platform connecting students and teachers, offering a streamlined interface with features from various educational apps.
 
