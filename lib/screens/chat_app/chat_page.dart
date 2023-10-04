@@ -6,6 +6,7 @@ import 'package:the_classroom/components/theme.dart';
 import 'package:the_classroom/components/toast.dart';
 import 'package:the_classroom/extras/constants.dart';
 import 'package:the_classroom/screens/chat_app/chat_room.dart';
+import 'package:the_classroom/screens/group_chat/group_chat.dart';
 import 'package:the_classroom/screens/home_screen/home_screen.dart';
 
 class ChatPage extends StatefulWidget {
@@ -217,12 +218,12 @@ class _ChatPageState extends State<ChatPage> with WidgetsBindingObserver {
             Icons.group,
             color: Colors.white,
           ),
-          onPressed: () => () {
-            // Navigator.push(
-            //     context,
-            //     CupertinoPageRoute(
-            //         builder: (context) => ChatRoom());
-          },
+          onPressed: () {
+            Navigator.push(
+                context,
+                CupertinoPageRoute(
+                    builder: (context) => const GroupChatScreen()));
+          }
         ),
       ),
     );
