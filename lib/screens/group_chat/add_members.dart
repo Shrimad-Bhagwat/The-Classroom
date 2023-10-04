@@ -133,6 +133,7 @@ class _AddMembersState extends State<AddMembers> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 kHalfSizedBox,
+                kHalfSizedBox,
                 Container(
                   height: size.height / 14,
                   width: size.width,

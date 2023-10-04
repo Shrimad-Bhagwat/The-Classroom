@@ -1,9 +1,15 @@
+import 'dart:io';
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:the_classroom/components/toast.dart';
 import 'package:the_classroom/screens/group_chat/group_info.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../components/theme.dart';
 import '../../extras/constants.dart';
@@ -18,6 +24,64 @@ class GroupChatRoom extends StatelessWidget {
   final TextEditingController _message = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  File? imageFile;
+  // Select image from Gallery
+  Future<void> getImage() async {
+    ImagePicker _picker = ImagePicker();
+
+    await _picker.pickImage(source: ImageSource.gallery).then((pickedFile) {
+      if (pickedFile != null) {
+        imageFile = File(pickedFile.path);
+        uploadImage();
+      }
+    });
+  }
+
+  // Upload Image to Firebase
+  Future<void> uploadImage() async {
+    String fileName = Uuid().v1();
+    int status=1;
+    await _firestore
+        .collection('groups')
+        .doc(groupChatId)
+        .collection('chats')
+        .doc(fileName)
+        .set({
+      "sendby": _auth.currentUser!.email?.split('@')[0],
+      "message": "",
+      "type": "img",
+      "time": FieldValue.serverTimestamp(),
+    });
+
+    var ref =
+    FirebaseStorage.instance.ref().child('images').child('$fileName.jpg');
+    var uploadTask = await ref
+        .putFile(imageFile! as File)
+        .catchError((error) async {
+
+      await _firestore
+          .collection('groups')
+          .doc(groupChatId)
+          .collection('chats').doc(fileName).delete();
+
+      status = 0;
+    });
+
+    if(status==1){
+      String imageUrl = await uploadTask.ref.getDownloadURL();
+      await _firestore
+          .collection('groups')
+          .doc(groupChatId)
+          .collection('chats').doc(fileName).update({
+        "message": imageUrl,
+      });
+      print('Image url ========== >$imageUrl');
+    }else{
+      showToastError('Image not found');
+    }
+  }
+
 
   void onSendMessage() async {
     Map<String, dynamic> chatData = {
@@ -92,7 +156,7 @@ class GroupChatRoom extends StatelessWidget {
                               Map<String, dynamic> chatMap =
                                   snapshot.data!.docs[index].data()
                                       as Map<String, dynamic>;
-                              return messageTile(size, chatMap);
+                              return messageTile(size, chatMap, context);
                             });
                       } else {
                         return Container(
@@ -127,7 +191,7 @@ class GroupChatRoom extends StatelessWidget {
                           decoration: InputDecoration(
                             suffixIcon: IconButton(
                               onPressed: () {
-                                // getImage();
+                                getImage();
                               },
                               icon: const Icon(
                                 Icons.photo,
@@ -156,7 +220,7 @@ class GroupChatRoom extends StatelessWidget {
     );
   }
 
-  Widget messageTile(Size size, Map<String, dynamic> chatMap) {
+  Widget messageTile(Size size, Map<String, dynamic> chatMap, BuildContext context) {
     return Builder(builder: (_) {
       if (chatMap['type'] == "text") {
         return Container(
@@ -194,7 +258,8 @@ class GroupChatRoom extends StatelessWidget {
             ),
           ),
         );
-      } else if (chatMap['type'] == "notify") {
+      }
+      else if (chatMap['type'] == "notify") {
         return Container(
           width: size.width,
           alignment: Alignment.center,
@@ -217,24 +282,47 @@ class GroupChatRoom extends StatelessWidget {
             ),
           ),
         );
-      } else if (chatMap['type'] == "img") {
+      }
+      else if (chatMap['type'] == "img") {
         return Container(
           width: size.width,
           alignment: chatMap['sendBy'] == _auth.currentUser!.displayName
               ? Alignment.centerRight
               : Alignment.centerLeft,
-          child: Container(
-            margin: const EdgeInsets.symmetric(
-                horizontal: kDefaultPadding / 1.5,
-                vertical: kDefaultPadding / 3),
-            padding: const EdgeInsets.symmetric(
-                vertical: kDefaultPadding / 5,
-                horizontal: kDefaultPadding / 1.5),
-            child: Image.network(
-              chatMap['message'],
-            ),
+          child: Row(
+            children: [
+              // Text(chatMap['sendBy']),
+              Container(
+
+                margin: const EdgeInsets.symmetric(
+                    horizontal: kDefaultPadding / 1.5,
+                    vertical: kDefaultPadding / 3),
+                padding: const EdgeInsets.symmetric(
+                    vertical: kDefaultPadding / 5,
+                    horizontal: kDefaultPadding / 1.5),
+                child: InkWell(
+                  onTap: ()=> Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_)=> ShowImage(imageUrl: chatMap['message'], ))
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      // borderRadius: BorderRadius.circular(kDefaultPadding),
+                        border: Border.all()
+                    ),
+                    height: size.height / 2.5,
+                    width: size.width / 2,
+                    alignment: chatMap['message'] != "" ? null : Alignment.center,
+                    child: chatMap['message'] != ""
+                        ? Image.network(chatMap['message'], fit: BoxFit.cover,)
+                        : const CircularProgressIndicator(),
+                  ),
+                ),
+
+              ),
+            ],
           ),
         );
+
       } else {
         return Container(
             width: kDefaultPadding,
@@ -253,5 +341,33 @@ class GroupChatRoom extends StatelessWidget {
             ));
       }
     });
+  }
+}
+
+
+class ShowImage extends StatelessWidget {
+  final String imageUrl;
+  const ShowImage({super.key, required this.imageUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+    return Scaffold(
+      appBar: AppBar(
+        leading: InkWell(
+          onTap: () {
+            FocusScope.of(context).requestFocus(FocusNode());
+            Navigator.pop(context);
+          },
+          child: const Icon(Icons.arrow_back_ios_new_outlined),
+        ),
+      ),
+      body: Container(
+        height: size.height,
+        width: size.width,
+        color: Colors.black,
+        child: Image.network(imageUrl),
+      ),
+    );
   }
 }
