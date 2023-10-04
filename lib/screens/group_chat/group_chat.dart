@@ -35,10 +35,10 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
         .collection('groups')
         .get()
         .then((value) {
-          setState(() {
-            groupList = value.docs;
-            isLoading = false;
-          });
+      setState(() {
+        groupList = value.docs;
+        isLoading = false;
+      });
     });
     print(groupList);
   }
@@ -59,46 +59,66 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
           ),
           title: Text('Groups'),
         ),
-        body: isLoading ?Container(
-          decoration: const BoxDecoration(
-              color: kTextWhiteColor,
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(kDefaultPadding * 1.5),
-                  topRight: Radius.circular(kDefaultPadding * 1.5))),
+        body: isLoading
+            ? Container(
+                decoration: const BoxDecoration(
+                    color: kTextWhiteColor,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(kDefaultPadding * 1.5),
+                        topRight: Radius.circular(kDefaultPadding * 1.5))),
+                child: CircularProgressIndicator(),
+                alignment: Alignment.center,
+              )
+            : Container(
+                child: Container(
+                  decoration: const BoxDecoration(
+                      color: kTextWhiteColor,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(kDefaultPadding * 1.5),
+                          topRight: Radius.circular(kDefaultPadding * 1.5))),
+                  child: ListView.builder(
 
-          child: CircularProgressIndicator(),
-          alignment: Alignment.center,
-        ) :Container(
-          child: Container(
-            decoration: const BoxDecoration(
-                color: kTextWhiteColor,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(kDefaultPadding * 1.5),
-                    topRight: Radius.circular(kDefaultPadding * 1.5))),
-            child: ListView.builder(
-                itemCount: groupList.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                              builder: (context) => GroupChatRoom(
-                                groupChatId: groupList[index]['id'],
-                                groupChatName: groupList[index]['name'],
-                              )));
-                    },
-                    leading: Icon(
-                      Icons.group,
-                      color: kTextLightColor,
-                    ),
-                    title: Text(groupList[
-                      index
-                    ]['name']),
-                  );
-                }),
-          ),
-        ),
+                      itemCount: groupList.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          child: Column(
+                            children: [
+                              kHalfSizedBox,
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+                                child: ListTile(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        CupertinoPageRoute(
+                                            builder: (context) => GroupChatRoom(
+                                                  groupChatId: groupList[index]['id'],
+                                                  groupChatName: groupList[index]
+                                                      ['name'],
+                                                )));
+                                  },
+                                  leading: Icon(
+                                    Icons.group,
+                                    color: kTextLightColor,
+                                  ),
+                                  title: Text(
+                                    groupList[index]['name'],
+                                    style: TextStyle(
+                                        fontSize: 18, fontWeight: FontWeight.w500),
+                                  ),
+
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal:kDefaultPadding),
+                                child: const Divider(thickness: 2,color: kTextLightColor,),
+                              )
+                            ],
+                          ),
+                        );
+                      }),
+                ),
+              ),
         floatingActionButton: FloatingActionButton(
           backgroundColor: kPrimaryColor,
           child: Icon(

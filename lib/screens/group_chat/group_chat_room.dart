@@ -60,7 +60,10 @@ class GroupChatRoom extends StatelessWidget {
             IconButton(
                 onPressed: () {
                   Navigator.push(context,
-                      CupertinoPageRoute(builder: (context) => GroupInfo()));
+                      CupertinoPageRoute(builder: (context) => GroupInfo(
+                        groupChatName: groupChatName,
+                        groupChatId: groupChatId,
+                      )));
                 },
                 icon: const Icon(
                   Icons.more_vert,
