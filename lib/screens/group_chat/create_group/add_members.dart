@@ -1,8 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:the_classroom/screens/group_chat/create_group/create_group.dart';
+import 'package:the_classroom/screens/home_screen/home_screen.dart';
 
 import '../../../components/theme.dart';
+import '../../../components/toast.dart';
 import '../../../extras/constants.dart';
 
 class AddMembersInGroup extends StatefulWidget {
@@ -14,10 +18,94 @@ class AddMembersInGroup extends StatefulWidget {
 
 class _AddMembersInGroupState extends State<AddMembersInGroup> {
   bool isLoading = false;
-
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final TextEditingController _search = TextEditingController();
-
   final FocusNode _focusNode = FocusNode();
+  List<Map<String, dynamic>> memberList = [];
+  Map<String, dynamic>? userMap;
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUserDetails();
+    print(memberList);
+  }
+
+  void getCurrentUserDetails() async {
+    await _firestore
+        .collection('users')
+        .doc(_auth.currentUser!.uid)
+        .get()
+        .then((map) {
+      setState(() {
+        memberList.add({
+          "name": map['name'],
+          "email": map['email'],
+          "uid": map['uid'],
+          "isAdmin": true,
+        });
+      });
+    });
+  }
+
+  // Search function for users
+  void onSearch() async {
+    FocusScope.of(context).requestFocus(FocusNode());
+
+    setState(() {
+      isLoading = true;
+    });
+
+    await _firestore
+        .collection('users')
+        .where("email", isEqualTo: _search.text.toLowerCase())
+        .get()
+        .then((value) {
+      if (value.docs.isNotEmpty) {
+        setState(() {
+          userMap = value.docs[0].data();
+          isLoading = false;
+        });
+        print(userMap);
+      } else {
+        showToast('No User found!');
+        setState(() {
+          isLoading = false;
+        });
+      }
+    });
+  }
+
+  void onResultTap() {
+    bool isAlreadyMember = false;
+    for (int i = 0; i < memberList.length; i++) {
+      if (memberList[i]['uid'] == userMap!['uid']) {
+        isAlreadyMember = true;
+      }
+    }
+    if (!isAlreadyMember) {
+      setState(() {
+        memberList.add({
+          "name": userMap!['name'],
+          "email": userMap!['email'],
+          "uid": userMap!['uid'],
+          "isAdmin": false,
+        });
+        userMap = null;
+      });
+    } else {
+      showToast("User already added!");
+    }
+  }
+
+  void onRemoveMembers(int index) {
+    if (memberList[index]['uid'] != _auth.currentUser!.uid) {
+      setState(() {
+        memberList.removeAt(index);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +122,7 @@ class _AddMembersInGroupState extends State<AddMembersInGroup> {
             },
             child: const Icon(Icons.arrow_back_ios_new_outlined),
           ),
-          title: Text('Add Members'),
+          title: const Text('Add Members'),
         ),
         body: Container(
           height: size.height,
@@ -50,17 +138,18 @@ class _AddMembersInGroupState extends State<AddMembersInGroup> {
                 kHalfSizedBox,
                 Flexible(
                   child: ListView.builder(
-                    itemCount: 3,
+                    itemCount: memberList.length,
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
                       return ListTile(
-                        onTap: () {},
+                        onTap: () => onRemoveMembers(index),
                         leading: const Icon(
                           Icons.account_circle,
                           color: kTextLightColor,
                         ),
-                        title: const Text("User2"),
+                        title: Text(memberList[index]['name']),
+                        subtitle: Text(memberList[index]['email']),
                         trailing: const Icon(
                           Icons.close,
                           color: kTextLightColor,
@@ -95,7 +184,7 @@ class _AddMembersInGroupState extends State<AddMembersInGroup> {
                   height: size.height / 50,
                 ),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: onSearch,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: kSecondaryColor,
                     foregroundColor: kTextBlackColor,
@@ -123,24 +212,38 @@ class _AddMembersInGroupState extends State<AddMembersInGroup> {
                     ],
                   ),
                 ),
+                userMap != null
+                    ? ListTile(
+                        onTap: onResultTap,
+                        leading: const Icon(
+                          Icons.account_circle,
+                          color: kTextLightColor,
+                        ),
+                        title: Text(userMap!['name']),
+                        subtitle: Text(userMap!['email']),
+                        trailing: const Icon(
+                          Icons.add,
+                          color: kTextLightColor,
+                        ),
+                      )
+                    : const SizedBox(),
               ],
             ),
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: kPrimaryColor,
-          onPressed: () {
-            Navigator.push(
-                context,
-                CupertinoPageRoute(
-                    builder: (context) =>  CreateGroup()));
-
-          },
-          child: Icon(
-            Icons.forward,
-            color: kTextWhiteColor,
-          ),
-        ),
+        floatingActionButton: memberList.length >= 2
+            ? FloatingActionButton(
+                backgroundColor: kPrimaryColor,
+                onPressed: () {
+                  Navigator.push(context,
+                      CupertinoPageRoute(builder: (context) => CreateGroup()));
+                },
+                child: const Icon(
+                  Icons.forward,
+                  color: kTextWhiteColor,
+                ),
+              )
+            : const SizedBox(),
       ),
     );
   }
