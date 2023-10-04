@@ -14,12 +14,12 @@ The application is designed with a simple and user-friendly interface that enabl
 
 ![The Classroom](./images/the_classroom_mockup_2.png)
 
-### [Demo Video](./images/the_classroom_demo.mp4)
+### [Demo Video](https://youtu.be/GHizCVvIlr4)
 
 ## Usage example
 
 This app can be used by students and professors to communicate properly and simplify all the tasks.
-<!-- 
+
 ## Development setup
 
 Requirements 
@@ -41,4 +41,4 @@ git clone https://github.com/<YOUR PROFILE>/VIT-RideShare.git
 3. Commit your changes (`git commit -am 'Add <feature-name>'`)
 4. Push to the branch (`git push origin feature/<feature-name>`)
 5. Create a new Pull Request
- -->
+
