@@ -236,7 +236,7 @@ class _AddMembersInGroupState extends State<AddMembersInGroup> {
                 backgroundColor: kPrimaryColor,
                 onPressed: () {
                   Navigator.push(context,
-                      CupertinoPageRoute(builder: (context) => CreateGroup()));
+                      CupertinoPageRoute(builder: (context) => CreateGroup(memberList: memberList,)));
                 },
                 child: const Icon(
                   Icons.forward,

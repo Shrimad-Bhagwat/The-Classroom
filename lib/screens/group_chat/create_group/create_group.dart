@@ -1,15 +1,65 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:the_classroom/screens/chat_app/chat_page.dart';
+import 'package:the_classroom/screens/chat_screen/chat_screen.dart';
+import 'package:the_classroom/screens/home_screen/home_screen.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../components/theme.dart';
 import '../../../extras/constants.dart';
 
-class CreateGroup extends StatelessWidget {
-  CreateGroup({super.key});
+class CreateGroup extends StatefulWidget {
+  final List<Map<String, dynamic>> memberList;
 
+  const CreateGroup({required this.memberList, super.key});
+
+  @override
+  State<CreateGroup> createState() => _CreateGroupState();
+}
+
+class _CreateGroupState extends State<CreateGroup> {
   bool isLoading = false;
-  final TextEditingController _search = TextEditingController();
+  final TextEditingController _groupName = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  void createGroup() async {
+    String groupId = Uuid().v1();
+    setState(() {
+      isLoading = true;
+    });
+    await _firestore.collection('groups').doc(groupId).set({
+      "members": widget.memberList,
+      "id": groupId,
+      "groupName": _groupName.text,
+    });
+
+    for (int i = 0; i < widget.memberList.length; i++) {
+      String uid = widget.memberList[i]['uid'];
+      await _firestore
+          .collection('users')
+          .doc(uid)
+          .collection('groups')
+          .doc(groupId)
+          .set({
+        "name": _groupName.text,
+        "id": groupId,
+      });
+    }
+
+    await _firestore.collection('groups').doc(groupId).collection('chats').add({
+      "message": "${_auth.currentUser!.displayName} Created this group.",
+      "type": "notify"
+    });
+
+    var count = 0;
+    Navigator.popUntil(context, (route) {
+      return count++ == 3;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +99,9 @@ class CreateGroup extends StatelessWidget {
                   width: size.width / 1.15,
                   child: TextField(
                     focusNode: _focusNode,
-                    controller: _search,
+                    controller: _groupName,
                     style:
-                    const TextStyle(color: kTextBlackColor, fontSize: 16),
+                        const TextStyle(color: kTextBlackColor, fontSize: 16),
                     decoration: InputDecoration(
                       hintText: "Enter Group Name",
                       border: OutlineInputBorder(
@@ -65,7 +115,7 @@ class CreateGroup extends StatelessWidget {
                 height: size.height / 50,
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: createGroup,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: kSecondaryColor,
                   foregroundColor: kTextBlackColor,
@@ -76,20 +126,20 @@ class CreateGroup extends StatelessWidget {
                   children: [
                     isLoading
                         ? const Positioned(
-                      child: SizedBox(
-                        height: 24.0,
-                        width: 24.0,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.0,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                              Colors.white),
-                        ),
-                      ),
-                    )
+                            child: SizedBox(
+                              height: 24.0,
+                              width: 24.0,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.0,
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(Colors.white),
+                              ),
+                            ),
+                          )
                         : const Text(
-                      "Create Group",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
+                            "Create Group",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
                   ],
                 ),
               ),
