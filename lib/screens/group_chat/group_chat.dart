@@ -83,7 +83,10 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                       Navigator.push(
                           context,
                           CupertinoPageRoute(
-                              builder: (context) => GroupChatRoom()));
+                              builder: (context) => GroupChatRoom(
+                                groupChatId: groupList[index]['id'],
+                                groupChatName: groupList[index]['name'],
+                              )));
                     },
                     leading: Icon(
                       Icons.group,
