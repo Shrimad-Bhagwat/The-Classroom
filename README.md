@@ -29,14 +29,14 @@ Requirements
 2. Clone it to your device using
 
 ```
-git clone https://github.com/<YOUR PROFILE>/VIT-RideShare.git
+git clone https://github.com/<YOUR PROFILE>/The-Classroom.git
 ```
 3. Start working 
 
 
 ## Contributing
 
-1. Fork it (<https://github.com/Shrimad-Bhagwat/VIT-RideShare.git>)
+1. Fork it (<https://github.com/Shrimad-Bhagwat/The-Classroom.git>)
 2. Create your feature branch (`git checkout -b feature/<feature-name>`)
 3. Commit your changes (`git commit -am 'Add <feature-name>'`)
 4. Push to the branch (`git push origin feature/<feature-name>`)
