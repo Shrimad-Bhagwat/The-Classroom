@@ -10,9 +10,10 @@ The Classroom is a mobile application developed using Flutter and Firebase. It s
 
 The application is designed with a simple and user-friendly interface that enables students to easily navigate through the app's features. 
 
-![The Classroom](./images/mockup.jpg)
+![the_classroom_mockup](https://github.com/Shrimad-Bhagwat/The-Classroom/assets/51125208/7e010d48-6282-4cb2-b2e4-18e05d051fa6)
 
-![The Classroom](./images/the_classroom_mockup_2.png)
+![the_classroom_mockup_2](https://github.com/Shrimad-Bhagwat/The-Classroom/assets/51125208/ba3e40be-f862-4794-9deb-3503a3d357d7)
+
 
 ### [Demo Video](https://youtu.be/GHizCVvIlr4)
 
